@@ -11,7 +11,8 @@
   <title>タワーディフェンス</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif;
-        -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+        -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
+        touch-action: manipulation; }
     body { background: #111827; color: #eee; padding: 8px; overflow-x: hidden; }
     #top { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; }
     .cb { background: #1f2937; border: 1px solid #374151; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 600; color: #eee; }
@@ -583,11 +584,26 @@
         ctx.font = `${Math.round(r * 1.15)}px sans-serif`;
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.fillText(u.icon, cx, cy + 1);
-        // rarity badge
+        // rarity badge (右上)
         ctx.font = 'bold 7px sans-serif'; ctx.fillStyle = RRC[u.rarity];
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.fillText(RRB[u.rarity], cx + r * 0.62, cy - r * 0.62);
-        // enhance badge
+        // スタック数バッジ (左上) — 2体以上で表示
+        if (!ghost && u.stack && u.stack > 1) {
+          const sc = u.stack;
+          const bcolor = sc >= 3 ? '#fbbf24' : '#e2e8f0';
+          // 背景ピル
+          const bw = sc >= 3 ? 18 : 16, bh = 11;
+          const bx = cx - r * 0.62 - bw / 2, by = cy - r * 0.62 - bh / 2;
+          ctx.fillStyle = sc >= 3 ? '#78350f' : '#1e293b';
+          ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 4); ctx.fill();
+          ctx.strokeStyle = bcolor; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 4); ctx.stroke();
+          ctx.font = `bold ${sc >= 3 ? 8 : 7}px sans-serif`;
+          ctx.fillStyle = bcolor;
+          ctx.fillText('×' + sc, cx - r * 0.62, cy - r * 0.62);
+        }
+        // enhance badge (下)
         if (lv > 0) {
           const bw = 15, bh = 9, bx = cx - bw / 2, by = cy + r - 4;
           ctx.fillStyle = RRC[u.rarity]; ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 3); ctx.fill();
