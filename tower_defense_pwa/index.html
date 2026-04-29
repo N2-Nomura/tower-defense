@@ -4,15 +4,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>タワーディフェンス - 無限タイムラインモード</title>
+  <title>おもちゃの兵隊：子供部屋の戦い</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --panel: rgba(30, 41, 59, 0.7);
-      --border: rgba(255, 255, 255, 0.1);
-      --accent-blue: #3b82f6;
-      --accent-purple: #8b5cf6;
-      --accent-green: #10b981;
+      --bg: #e0e0e0; /* Light grey, like a floor */
+      --panel: rgba(255, 255, 255, 0.8); /* White plastic/cardboard */
+      --border: rgba(0, 0, 0, 0.1); /* Subtle outline */
+      --accent-blue: #3b82f6; /* Bright Blue */
+      --accent-gold: #fbbf24; /* Bright Yellow */
+      --accent-purple: #8b5cf6; /* Bright Purple */
+      --accent-green: #22c55e; /* Brighter Green */
       --accent-red: #ef4444;
       --text: #f8fafc;
       --text-dim: #94a3b8;
@@ -31,8 +32,8 @@
 
     body {
       background: var(--bg);
-      background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
-      color: var(--text);
+      background-image: radial-gradient(circle at top right, #f0f0f0, #e0e0e0); /* Soft, playroom feel */
+      color: #333333; /* Dark text on light background */
       padding: 12px;
       overflow-x: hidden;
       min-height: 100vh;
@@ -63,7 +64,10 @@
       align-items: center;
     }
 
-    .cb span { color: #fbbf24; margin-left: 4px; }
+    .cb span {
+      color: var(--accent-gold); /* Use accent-gold for numbers */
+      margin-left: 4px;
+    }
 
     #wtb {
       grid-column: span 3;
@@ -93,15 +97,23 @@
       margin-bottom: 6px;
     }
 
-    #eg-lbl { font-size: 11px; color: var(--text-dim); font-weight: 600; }
-    #eg-txt { font-size: 11px; font-weight: 700; }
+    #eg-lbl {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+
+    #eg-txt {
+      font-size: 11px;
+      font-weight: 700;
+    }
 
     #eg-track {
       height: 10px;
-      background: rgba(0,0,0,0.3);
+      background: rgba(0, 0, 0, 0.3);
       border-radius: 5px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     #eg-fill {
@@ -116,7 +128,7 @@
       position: relative;
       width: 100%;
       margin: 0 auto;
-      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
+      filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.5));
     }
 
     canvas {
@@ -125,7 +137,8 @@
       border: 2px solid #334155;
       width: 100%;
       height: auto;
-      background: #1c1917;
+      background: #f0f0f0; /* Light background for canvas */
+      touch-action: none;
     }
 
     #bottom {
@@ -150,20 +163,36 @@
       font-weight: 800;
       color: white;
       transition: all 0.2s;
-      box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 2px;
     }
 
-    .bs:active { transform: translateY(2px); box-shadow: none; }
-    .bs:disabled { opacity: 0.4; filter: grayscale(1); }
+    .bs:active {
+      transform: translateY(2px);
+      box-shadow: none;
+    }
 
-    #bn { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-    #brr { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+    .bs:disabled {
+      opacity: 0.4;
+      filter: grayscale(1);
+    }
 
-    .cl { font-size: 10px; opacity: 0.8; font-weight: 400; }
+    #bn {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    }
+
+    #brr {
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+    }
+
+    .cl {
+      font-size: 10px;
+      opacity: 0.8;
+      font-weight: 400;
+    }
 
     #ep {
       display: grid;
@@ -175,7 +204,7 @@
       padding: 8px;
       border: 1px solid var(--border);
       border-radius: 10px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       color: var(--text);
       cursor: pointer;
       display: flex;
@@ -184,11 +213,26 @@
       gap: 4px;
     }
 
-    .eb:disabled { opacity: 0.3; }
+    .eb:disabled {
+      opacity: 0.3;
+    }
 
-    .eb-label { font-size: 10px; font-weight: 700; color: var(--text-dim); }
-    .elv { font-size: 16px; font-weight: 900; }
-    .eco { font-size: 10px; color: #fbbf24; font-weight: 600; }
+    .eb-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-dim);
+    }
+
+    .elv {
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .eco {
+      font-size: 10px;
+      color: #fbbf24;
+      font-weight: 600;
+    }
 
     #ui {
       background: var(--panel);
@@ -199,53 +243,121 @@
       border: 1px solid var(--border);
     }
 
-    #tap-menu {
+    #tap-menu,
+    #pray-menu {
       display: none;
       position: fixed;
       z-index: 300;
-      background: #1e293b;
-      border: 1px solid #475569;
+      background: white;
+      border: 3px solid #334155;
       border-radius: 16px;
       padding: 10px;
       gap: 8px;
       flex-direction: column;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
       min-width: 150px;
+      color: #333;
     }
 
-    #tap-menu.show { display: flex; animation: pop 0.2s ease-out; }
-    @keyframes pop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    #pray-menu {
+      inset: 0;
+      margin: auto;
+      width: fit-content;
+      height: fit-content;
+    }
 
-    .tap-menu-btn { padding: 12px; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; }
-    #tmb-evolve { background: #f59e0b; color: #78350f; }
-    #tmb-sell { background: #fee2e2; color: #b91c1c; }
-    #tmb-cancel { background: #334155; color: #cbd5e1; }
+    #tap-menu.show,
+    #pray-menu.show {
+      display: flex;
+      animation: pop 0.2s ease-out;
+    }
+
+    @keyframes pop {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .tap-menu-btn {
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #tmb-evolve {
+      background: #f59e0b;
+      color: #78350f;
+    }
+
+    #pm-n {
+      background: var(--accent-green);
+      color: white;
+    }
+
+    #pm-r {
+      background: var(--accent-blue);
+      color: white;
+    }
+
+    #pm-sr { background: var(--accent-purple); color: white; }
+
+    #pm-ssr {
+      background: linear-gradient(135deg, #fbbf24, #d97706);
+      color: #78350f;
+    }
+
+    #tmb-sell {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    #tmb-cancel {
+      background: #334155;
+      color: #cbd5e1;
+    }
   </style>
 </head>
 
 <body>
 
   <div id="tap-menu">
-    <div class="tap-menu-title" id="tmb-title" style="text-align:center; padding-bottom:8px; border-bottom:1px solid #334155;">キャラ操作</div>
-    <button class="tap-menu-btn" id="tmb-evolve" style="display:none">✨ 進化する</button>
-    <button class="tap-menu-btn" id="tmb-sell">💰 売却</button>
+    <div class="tap-menu-title" id="tmb-title" style="text-align:center; padding-bottom:8px; border-bottom:2px solid #eee; font-weight:800;">おもちゃの操作</div>
+    <button class="tap-menu-btn" id="tmb-evolve" style="display:none">✨ 進化</button>
+    <button class="tap-menu-btn" id="tmb-sell">🗑️ かたづける</button>
     <button class="tap-menu-btn" id="tmb-cancel">✕ 戻る</button>
+  </div>
+
+  <div id="pray-menu">
+    <div class="tap-menu-title" style="text-align:center; padding-bottom:8px; border-bottom:2px solid #eee; font-weight:800;">メダルの使い道</div>
+    <button class="tap-menu-btn" id="pm-r">Rキャラ (60%)</button>
+    <button class="tap-menu-btn" id="pm-sr">SRキャラ (20%)</button>
+    <button class="tap-menu-btn" id="pm-ssr">SSRキャラ (10%)</button>
+    <button class="tap-menu-btn" id="pm-cancel">✕ 戻る</button>
   </div>
 
   <div id="top">
     <div class="stats-group">
-      <div class="cb">💰 <span id="sc">200</span></div>
-      <div class="cb">🔮 <span id="sp">3</span></div>
+      <div class="cb">コイン <span id="sc">200</span></div>
+      <div class="cb">メダル <span id="sp">3</span></div>
     </div>
     <div class="stats-group">
       <div class="cb">WAVE <span id="sw">1</span></div>
-      <div class="cb">SCORE <span id="ss">0</span></div>
+      <div class="cb">スコア <span id="ss">0</span></div>
     </div>
-    <div id="wtb"><span id="wt-lbl">START!</span></div>
+    <div id="wtb"><span id="wt-lbl">スタート！</span></div>
 
     <div id="eg">
       <div id="eg-header">
-        <div id="eg-lbl">道にいる敵の数</div>
+        <div id="eg-lbl">部屋の散らかり具合</div>
         <div id="eg-txt"><span id="se">0</span> / 100</div>
       </div>
       <div id="eg-track">
@@ -259,42 +371,48 @@
     <div id="mo" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
     background:rgba(15,23,42,0.95);color:white;padding:30px;border-radius:20px;
     font-size:20px;font-weight:900;text-align:center;line-height:1.6;
-    border:2px solid var(--accent-blue);box-shadow:0 0 30px rgba(59,130,246,0.5);white-space:nowrap;z-index:200;"></div>
+    border:2px solid var(--accent-blue);box-shadow:0 0 30px rgba(59,130,246,0.5);white-space:nowrap;z-index:200;">
+    </div>
   </div>
 
   <div id="bottom">
     <div class="action-row">
       <button class="bs" id="bn">
-        <span>🎲 召喚</span>
-        <span class="cl">💰 50</span>
+        <span>🎲 おもちゃを出す</span>
+        <span class="cl">コイン 50</span>
       </button>
       <button class="bs" id="brr">
-        <span>✨ お祈り</span>
-        <span class="cl">🔮 1個</span>
+        <span>✨ お祈りする</span>
+        <span class="cl">メダル 1</span>
       </button>
     </div>
 
     <div id="ep">
       <button class="eb" id="enn" style="border-top: 3px solid var(--accent-green);">
-        <span class="eb-label">N-LEVEL</span>
+        <span class="eb-label">N-強化</span>
         <span class="elv" id="enlv">Lv0</span>
         <span class="eco" id="enco">💰80</span>
       </button>
       <button class="eb" id="err" style="border-top: 3px solid var(--accent-blue);">
-        <span class="eb-label">R-LEVEL</span>
+        <span class="eb-label">R-強化</span>
         <span class="elv" id="erlv">Lv0</span>
         <span class="eco" id="erco">💰150</span>
       </button>
       <button class="eb" id="esr" style="border-top: 3px solid var(--accent-purple);">
-        <span class="eb-label">SR-LEVEL</span>
+        <span class="eb-label">SR-強化</span>
         <span class="elv" id="esrlv">Lv0</span>
         <span class="eco" id="esrco">💰280</span>
+      </button>
+      <button class="eb" id="essr" style="border-top: 3px solid var(--accent-gold);">
+        <span class="eb-label">SSR-強化</span>
+        <span class="elv" id="essrlv">Lv0</span>
+        <span class="eco" id="essrco">💰500</span>
       </button>
     </div>
 
     <div id="ui">
-      <div>👾 配置数: <span id="suu">0</span> / 24</div>
-      <div>💡 15秒ごとにWaveが自動で重なっていきます！</div>
+      <div>👾 配置数: <span id="suu">0</span> / 72</div>
+      <div>� 15秒ごとにWaveが自動で重なっていきます！</div>
     </div>
   </div>
 
@@ -303,6 +421,116 @@
       const cv = document.getElementById('c');
       const ctx = cv.getContext('2d');
       const CW = cv.width, CH = cv.height;
+
+      // アセット管理
+      const assets = {};
+      function generateProceduralSprite(id, color, type = 'unit') {
+        const canvas = document.createElement('canvas');
+        canvas.width = 128; canvas.height = 128;
+        const g = canvas.getContext('2d');
+        g.translate(64, 64);
+        const s = 1.5; // Scale factor
+
+        if (type === 'unit') {
+          // 影
+          g.fillStyle = 'rgba(0,0,0,0.1)';
+          g.beginPath(); g.ellipse(0, 50, 30, 10, 0, 0, Math.PI*2); g.fill();
+
+          // 脚と台座
+          g.fillStyle = '#333';
+          g.fillRect(-24*s/2, 45, 24*s, 8); // ベース台座
+
+          // グラデーション設定
+          const grad = g.createLinearGradient(-20, 0, 20, 0);
+          grad.addColorStop(0, color);
+          grad.addColorStop(0.5, '#fff7'); // ハイライト
+          grad.addColorStop(1, color);
+          g.fillStyle = grad;
+
+          // 足
+          g.fillRect(-12, 35, 8, 12); g.fillRect(4, 35, 8, 12);
+
+          // 体 (ユニフォーム)
+          g.fillRect(-15, 10, 30, 25);
+          g.fillStyle = 'rgba(0,0,0,0.2)';
+          g.fillRect(-15, 25, 30, 5); // ベルト
+
+          // 頭 (円)
+          g.fillStyle = '#ffdbac'; // 肌色
+          g.beginPath(); g.arc(0, 0, 15, 0, Math.PI * 2); g.fill();
+
+          // 帽子 (兵隊のシャコー帽)
+          g.fillStyle = color;
+          g.fillRect(-15, -25, 30, 15);
+          g.fillStyle = '#fbbf24'; // 帽子の飾り
+          g.fillRect(-2, -28, 4, 8);
+
+          // 目
+          g.fillStyle = '#000';
+          g.beginPath(); g.arc(-6, -2, 2, 0, Math.PI*2); g.fill();
+          g.beginPath(); g.arc(6, -2, 2, 0, Math.PI*2); g.fill();
+          
+          // 腕と武器
+          g.strokeStyle = color; g.lineWidth = 4;
+          g.beginPath(); g.moveTo(-15, 15); g.lineTo(-25, 30); g.stroke(); // 左腕
+          g.beginPath(); g.moveTo(15, 15); g.lineTo(25, 30); g.stroke(); // 右腕
+
+          g.strokeStyle = '#444'; g.lineWidth = 3;
+          if (id.includes('warrior') || id.includes('defender')) {
+            g.beginPath(); g.moveTo(25, 30); g.lineTo(35, 0); g.stroke(); // 剣
+          } else if (id.includes('archer') || id.includes('sniper')) {
+            g.beginPath(); g.arc(30, 25, 12, -Math.PI/2, Math.PI/2); g.stroke(); // 弓
+          } else if (id.includes('mage') || id.includes('elf')) {
+            g.fillStyle = '#fbbf24'; g.fillRect(22, 10, 5, 30); // 杖
+            g.beginPath(); g.arc(24.5, 5, 8, 0, Math.PI*2); g.fill();
+          }
+
+          // 光沢
+          g.fillStyle = 'rgba(255,255,255,0.3)';
+          g.fillRect(-10, 15, 5, 5);
+        } else {
+          // 敵もグラデーションで立体的に
+          const eGrad = g.createRadialGradient(0,0,5,0,0,30);
+          eGrad.addColorStop(0, '#fff5');
+          eGrad.addColorStop(1, color);
+          g.fillStyle = eGrad;
+
+          if (id === 'en_std') { // ホコリ
+            for(let i=0; i<8; i++) {
+              g.beginPath(); g.arc(Math.cos(i)*20, Math.sin(i)*20, 15, 0, Math.PI*2); g.fill();
+            }
+          } else if (id === 'en_fast') { // 小さなパーツ
+            g.save(); g.rotate(Math.PI/4); g.fillRect(-15,-15,30,30); g.restore();
+          } else if (id === 'en_tank') { // 段ボール箱
+            g.fillRect(-25, -25, 50, 50);
+            g.strokeStyle = 'rgba(0,0,0,0.2)'; g.strokeRect(-25, -25, 50, 50);
+            g.fillStyle = 'rgba(0,0,0,0.2)'; g.fillRect(-25, -5, 50, 10);
+          } else if (id === 'en_boss') { // 悪い怪獣
+            g.beginPath(); g.arc(0, 0, 35, 0, Math.PI * 2); g.fill();
+            g.fillStyle = '#000';
+            g.beginPath(); g.moveTo(-15, 10); g.lineTo(15, 10); g.lineTo(0, 25); g.closePath(); g.fill();
+            g.fillStyle = '#fff'; g.fillRect(-15, -15, 12, 12); g.fillRect(3, -15, 12, 12);
+            // 角
+            g.fillStyle = '#333';
+            g.beginPath(); g.moveTo(-20, -30); g.lineTo(-35, -50); g.lineTo(-10, -30); g.fill();
+            g.beginPath(); g.moveTo(20, -30); g.lineTo(35, -50); g.lineTo(10, -30); g.fill();
+          }
+          
+          if (id !== 'en_boss') {
+            g.fillStyle = '#fff'; g.beginPath(); g.arc(-8, -5, 5, 0, Math.PI*2); g.fill(); g.beginPath(); g.arc(8, -5, 5, 0, Math.PI*2); g.fill();
+            g.fillStyle = '#000'; g.beginPath(); g.arc(-8, -5, 2, 0, Math.PI*2); g.fill(); g.beginPath(); g.arc(8, -5, 2, 0, Math.PI*2); g.fill();
+          }
+        }
+
+        const img = new Image();
+        img.src = canvas.toDataURL();
+        return { img, loaded: true };
+      }
+
+      function loadSprite(id, fallbackEmoji, color, isEnemy = false) {
+        const generated = generateProceduralSprite(id, color, isEnemy ? 'enemy' : 'unit');
+        assets[id] = { ...generated, emoji: fallbackEmoji };
+      }
 
       const CELL = 30;
       const FC = Math.floor(CW / CELL);
@@ -332,87 +560,192 @@
       const SPY = PATH[0][1] * CELL + CELL / 2;
 
       const FPS = 60;
-      const WAVE_INTERVAL_SEC = 15;
+      const WAVE_INTERVAL_SEC = 15; // 15秒固定
 
-      const RRC = { n: '#4ade80', r: '#60a5fa', sr: '#c084fc' };
-      const EL = { n: 0, r: 0, sr: 0 };
+      const RRC = { n: '#4ade80', r: '#60a5fa', sr: '#c084fc', ssr: '#fbbf24' };
+      const EL = { n: 0, r: 0, sr: 0, ssr: 0 };
       function emul(rr) { return 1 + EL[rr] * 0.1; }
       function ecost(rr) {
-        const b = { n: 80, r: 150, sr: 280 }[rr], m = { n: 1.4, r: 1.5, sr: 1.6 }[rr];
+        const b = { n: 80, r: 150, sr: 280, ssr: 500 }[rr], m = { n: 1.4, r: 1.5, sr: 1.6, ssr: 1.7 }[rr];
         return Math.floor(b * Math.pow(m, EL[rr]));
       }
 
       const CN = [
-        { icon: '⚔️', color: '#60a5fa', radius: 65, baseDamage: 22, rate: 48, rarity: 'n' },
-        { icon: '🏹', color: '#4ade80', radius: 85, baseDamage: 14, rate: 40, rarity: 'n' },
-        { icon: '🧙', color: '#c084fc', radius: 70, baseDamage: 30, rate: 80, special: 'splash', rarity: 'n' },
-        { icon: '💊', color: '#34d399', radius: 62, baseDamage: 10, rate: 36, special: 'slow', rarity: 'n' },
+        { id: 'warrior', icon: '💂', color: '#3b82f6', radius: 95, baseDamage: 22, rate: 48, special: 'coin', rarity: 'n' }, // 青い兵隊
+        { id: 'archer', icon: '🏹', color: '#22c55e', radius: 190, baseDamage: 14, rate: 40, special: 'crit', rarity: 'n' }, // 緑の弓兵
+        { id: 'mage', icon: '🪄', color: '#8b5cf6', radius: 190, baseDamage: 30, rate: 80, special: 'splash', rarity: 'n' }, // 紫の魔法使い
+        { id: 'medic', icon: '🩹', color: '#facc15', radius: 95, baseDamage: 10, rate: 36, special: 'slow', rarity: 'n' }, // 黄色の救護兵
+        { id: 'axeman', icon: '🧸', color: '#a3a3a3', radius: 95, baseDamage: 35, rate: 70, special: 'crit', rarity: 'n' }, // 灰色のクマの兵隊
       ];
       const CR = [
-        { icon: '🛡️', color: '#60a5fa', radius: 75, baseDamage: 38, rate: 55, rarity: 'r' },
-        { icon: '🎯', color: '#4ade80', radius: 95, baseDamage: 28, rate: 38, rarity: 'r' },
-        { icon: '🧝', color: '#c084fc', radius: 80, baseDamage: 50, rate: 75, special: 'splash', rarity: 'r' },
-        { icon: '📿', color: '#34d399', radius: 72, baseDamage: 20, rate: 32, special: 'slow', rarity: 'r' },
+        { id: 'defender', icon: '🛡️', color: '#3b82f6', radius: 95, baseDamage: 38, rate: 55, special: 'coin', rarity: 'r' }, // 青い盾兵
+        { id: 'sniper', icon: '🔭', color: '#22c55e', radius: 190, baseDamage: 28, rate: 38, special: 'crit', rarity: 'r' }, // 緑の狙撃手
+        { id: 'elf', icon: '🧚', color: '#8b5cf6', radius: 190, baseDamage: 50, rate: 75, special: 'splash', rarity: 'r' }, // 紫の妖精
+        { id: 'priest', icon: '🌟', color: '#facc15', radius: 95, baseDamage: 20, rate: 32, special: 'slow', rarity: 'r' }, // 黄色の星の兵隊
+        { id: 'blacksmith', icon: '⚙️', color: '#a3a3a3', radius: 95, baseDamage: 45, rate: 60, special: 'splash', rarity: 'r' }, // 灰色の歯車兵
       ];
       const CSR = [
-        { icon: '🐉', color: '#f87171', radius: 110, baseDamage: 70, rate: 62, special: 'splash', rarity: 'sr' },
-        { icon: '👼', color: '#fbbf24', radius: 100, baseDamage: 34, rate: 20, special: 'chain', rarity: 'sr' },
-        { icon: '🥷', color: '#d1d5db', radius: 75, baseDamage: 24, rate: 12, rarity: 'sr' },
-        { icon: '🔮', color: '#a78bfa', radius: 125, baseDamage: 50, rate: 65, special: 'splash', rarity: 'sr' },
+        { id: 'dragon', icon: '🦖', color: '#ef4444', radius: 190, baseDamage: 70, rate: 62, special: 'splash', rarity: 'sr' }, // 赤い恐竜
+        { id: 'angel', icon: '🪁', color: '#fbbf24', radius: 190, baseDamage: 34, rate: 20, special: 'chain', rarity: 'sr' }, // 黄色の凧
+        { id: 'ninja', icon: '🥷', color: '#475569', radius: 95, baseDamage: 24, rate: 12, special: 'crit', rarity: 'sr' }, // 濃い灰色の忍者
+        { id: 'void', icon: '🎱', color: '#1e293b', radius: 190, baseDamage: 50, rate: 65, special: 'splash', rarity: 'sr' }, // 黒い8ボール
+        { id: 'bomb', icon: '💣', color: '#f87171', radius: 140, baseDamage: 90, rate: 90, special: 'splash', rarity: 'sr' }, // 赤い爆弾
       ];
-      const PN = [...CN, ...CN, ...CN, ...CR];
-      const PP = [...CR, ...CR, ...CSR];
+      const CSSR = [
+        { id: 'poseidon', icon: '🚢', color: '#3b82f6', radius: 95, baseDamage: 120, rate: 40, special: 'slow', rarity: 'ssr' }, // 青い船
+        { id: 'eclipse', icon: '🌑', color: '#1e293b', radius: 95, baseDamage: 80, rate: 10, special: 'crit', rarity: 'ssr' }, // 黒い月
+        { id: 'thunder', icon: '🚂', color: '#facc15', radius: 190, baseDamage: 100, rate: 30, special: 'chain', rarity: 'ssr' }, // 黄色の列車
+        { id: 'phoenix', icon: '🚀', color: '#f87171', radius: 190, baseDamage: 150, rate: 60, special: 'splash', rarity: 'ssr' }, // 赤いロケット
+        { id: 'king', icon: '👑', color: '#fbbf24', radius: 95, baseDamage: 200, rate: 50, special: 'coin', rarity: 'ssr' }, // 金色の王冠
+      ];
 
-      let coins = 200, pray = 3, score = 0, wave = 1;
-      let units = [], enemies = [], bullets = [], particles = [];
+      // スプライトの事前登録
+      [...CN, ...CR, ...CSR, ...CSSR].forEach(u => loadSprite(u.id, u.icon, u.color));
+      loadSprite('en_std', '🧶', '#a3a3a3', true); // ホコリの塊 (灰色)
+      loadSprite('en_fast', '🧩', '#facc15', true); // パズルピース (黄色)
+      loadSprite('en_tank', '📦', '#94a3b8', true); // 段ボール箱 (水色)
+      loadSprite('en_boss', '👾', '#ef4444', true); // モンスターのおもちゃ (赤)
+
+      let coins = 200, pray = 3, score = 0, wave = 1, summonCoinCount = 0;
+      let units = [], enemies = [], bullets = [], particles = [], floatingTexts = [];
       let globalTick = 0, spawnTick = 0;
-      let gameOver = false;
+      let gameOver = false, flashIntensity = 0;
 
       const $ = id => document.getElementById(id);
 
       function updateUI() {
         $('sc').textContent = coins; $('sp').textContent = pray;
         $('sw').textContent = wave; $('ss').textContent = score;
-        $('suu').textContent = units.length;
+        const totalUnits = units.reduce((sum, u) => sum + u.stack, 0);
+        $('suu').textContent = totalUnits;
+
+        const currentSummonCoinCost = 20 + summonCoinCount * 2; // 召喚コストを動的に計算
+        $('bn').querySelector('.cl').textContent = `コイン ${currentSummonCoinCost}`; // テキスト変更
+        $('bn').disabled = coins < currentSummonCoinCost; // コインが足りなければボタンを無効化
+
         const n = enemies.length; $('se').textContent = n;
         $('eg-fill').style.width = Math.min(n, 100) + '%';
         $('eg-fill').style.background = n >= 80 ? '#ef4444' : n >= 50 ? '#f59e0b' : '#10b981';
-        
-        const nextWaveIn = WAVE_INTERVAL_SEC - Math.floor((globalTick % (WAVE_INTERVAL_SEC * FPS)) / FPS);
-        $('wt-lbl').textContent = `NEXT WAVE IN ${nextWaveIn}s`;
-        $('wtb').style.background = 'rgba(59, 130, 246, 0.2)';
 
-        ['n', 'r', 'sr'].forEach(r => {
-          const prefix = r === 'n' ? 'en' : (r === 'r' ? 'er' : 'esr');
+        const nextWaveIn = WAVE_INTERVAL_SEC - Math.floor((globalTick % (WAVE_INTERVAL_SEC * FPS)) / FPS);
+        $('wt-lbl').textContent = `次の片付けまで: ${nextWaveIn}秒`; // テキスト変更
+        $('wtb').style.background = 'rgba(59, 130, 246, 0.2)'; // 背景色を維持
+
+        ['n', 'r', 'sr', 'ssr'].forEach(r => {
+          const prefix = r === 'n' ? 'en' : (r === 'r' ? 'er' : (r === 'sr' ? 'esr' : 'essr'));
           $(prefix + 'lv').textContent = 'Lv' + EL[r];
-          $(prefix + 'co').textContent = '💰' + ecost(r);
+          $(prefix + 'co').textContent = 'コイン' + ecost(r); // テキスト変更
         });
       }
 
       function summon(pool) {
         if (units.length >= 24) return;
         const ch = { ...pool[Math.floor(Math.random() * pool.length)] };
-        ch.stackId = ch.icon;
+        ch.stackId = ch.id;
         const stackable = units.find(u => u.stackId === ch.stackId && u.rarity === ch.rarity && (u.stack || 1) < 3);
-        if (stackable) { stackable.stack = (stackable.stack || 1) + 1; return; }
+        if (stackable) {
+          stackable.stack = (stackable.stack || 1) + 1;
+          if (stackable.stack === 3) {
+            stackable.stackEffectTimer = 30; // 0.5秒間 (60FPS) エフェクトを表示
+          }
+          return;
+        }
         const used = new Set(units.map(u => u.slotIdx));
-        let s = -1; for (let i = 0; i < 24; i++) if (!used.has(i)) { s = i; break; }
+        let s = -1;
+        search: for (let c = 0; c < SCOLS; c++) {
+          for (let r = SROWS - 1; r >= 0; r--) {
+            let idx = r * SCOLS + c;
+            if (!used.has(idx)) { s = idx; break search; }
+          }
+        }
         if (s < 0) return;
         const p = spos(s);
-        units.push({ ...ch, slotIdx: s, cx: p.x, cy: p.y, cd: 0, stack: 1 });
+        units.push({ 
+          ...ch, slotIdx: s, cx: p.x, cy: p.y, cd: 0, stack: 1, 
+          stackEffectTimer: 0,
+          // アニメーション用プロパティ
+          animScale: 0, // スポーン時の拡大用
+          animY: 0,     // 攻撃時の反動用
+          idleOff: Math.random() * Math.PI * 2 // 待機時のゆらぎ
+        });
       }
 
-      $('bn').onclick = () => { if (coins >= 50) { coins -= 50; summon(PN); } };
-      $('brr').onclick = () => { if (pray >= 1) { pray--; summon(PP); } };
-      $('enn').onclick = () => { const c = ecost('n'); if(coins>=c){ coins-=c; EL.n++; } };
-      $('err').onclick = () => { const c = ecost('r'); if(coins>=c){ coins-=c; EL.r++; } };
-      $('esr').onclick = () => { const c = ecost('sr'); if(coins>=c){ coins-=c; EL.sr++; } };
+      $('bn').onclick = () => {
+        const currentSummonCoinCost = 20 + summonCoinCount * 2;
+        if (coins >= currentSummonCoinCost) {
+          coins -= currentSummonCoinCost;
+          summonCoinCount++;
+          
+          // レアリティ抽選 (SSR: 0.1%, SR: 0.49%, R: 2.15%, N: 97.26%)
+          const r = Math.random();
+          let selectedPool = CN;
+          if (r < 0.001) {
+            selectedPool = CSSR;
+            flashIntensity = 40; // フラッシュの持続時間
+            showFloatingText("✨超レアおもちゃ！✨", CW / 2, CH / 2, "#fbbf24", 48); // テキスト変更
+            for (let i = 0; i < 80; i++) // 大量の金色のパーティクル
+              particles.push({ x: CW / 2, y: CH / 2, vx: (Math.random() - 0.5) * 15, vy: (Math.random() - 0.5) * 15, life: 60, color: '#fbbf24' });
+          }
+          else if (r < 0.0059) selectedPool = CSR;
+          else if (r < 0.0274) selectedPool = CR;
+          
+          summon(selectedPool);
+        }
+      };
 
-      const EVOLVE_NEXT = { n: () => CR, r: () => CSR };
+      const prayMenu = $('pray-menu');
+      $('brr').onclick = (e) => {
+        if (pray >= 1) {
+          prayMenu.classList.add('show');
+        }
+      };
+
+      function showFloatingText(txt, x, y, color, size = 32) {
+        floatingTexts.push({ txt, x, y, life: 60, color, size });
+      }
+
+      function executePray(rarityPool, chance) {
+        if (pray >= 1) {
+          pray--;
+          if (Math.random() < chance) {
+            summon(rarityPool);
+          } else {
+            showFloatingText("メダル切れ！", CW / 2, CH / 2, "#ef4444"); // テキスト変更
+          }
+          prayMenu.classList.remove('show');
+          updateUI();
+        }
+      }
+
+      $('pm-r').onclick = () => executePray(CR, 0.6);
+      $('pm-sr').onclick = () => executePray(CSR, 0.2);
+      $('pm-ssr').onclick = () => executePray(CSSR, 0.1);
+      $('pm-cancel').onclick = () => prayMenu.classList.remove('show');
+
+      $('enn').onclick = () => { const c = ecost('n'); if (coins >= c) { coins -= c; EL.n++; } };
+      $('err').onclick = () => { const c = ecost('r'); if (coins >= c) { coins -= c; EL.r++; } };
+      $('esr').onclick = () => { const c = ecost('sr'); if (coins >= c) { coins -= c; EL.sr++; } };
+      $('essr').onclick = () => { const c = ecost('ssr'); if (coins >= c) { coins -= c; EL.ssr++; } };
+
+      const EVOLVE_NEXT = { n: () => CR, r: () => CSR, sr: () => CSSR };
       function doEvolve(u) {
         const pool = EVOLVE_NEXT[u.rarity]();
         const ev = { ...pool[Math.floor(Math.random() * pool.length)] };
-        Object.assign(u, ev); u.stackId = u.icon; u.stack = 1;
+        const oldId = u.id;
+        Object.assign(u, ev);
+        u.stackId = u.id;
+        u.stack = 1;
+        u.animScale = 1.5; // 合体時のポップアップ
+        u.stackEffectTimer = 0; // 進化後はスタックがリセットされるため、エフェクトタイマーもリセット
+
+        // 進化後に、既に同じキャラが他にいないか探して合流させる
+        const target = units.find(o => o !== u && o.stackId === u.id && o.rarity === u.rarity && o.stack < 3);
+        if (target) {
+          target.stack++;
+          if (target.stack === 3) target.stackEffectTimer = 30;
+          units = units.filter(x => x !== u);
+          showFloatingText("ガッタイ！", target.cx, target.cy, "#fbbf24", 20); // テキスト変更
+        }
       }
 
       const tapMenu = $('tap-menu');
@@ -425,85 +758,177 @@
         tapMenu.style.top = Math.min(cy, window.innerHeight - 150) + 'px';
         tapMenu.classList.add('show');
       }
-      $('tmb-evolve').onclick = () => { if(tapTarget) { doEvolve(tapTarget); updateUI(); } tapMenu.classList.remove('show'); };
-      $('tmb-sell').onclick = () => { if(tapTarget) { units = units.filter(u => u !== tapTarget); updateUI(); } tapMenu.classList.remove('show'); };
+      $('tmb-evolve').onclick = () => { if (tapTarget) doEvolve(tapTarget); tapMenu.classList.remove('show'); };
+      $('tmb-sell').onclick = () => { if (tapTarget) units = units.filter(u => u !== tapTarget); tapMenu.classList.remove('show'); };
       $('tmb-cancel').onclick = () => tapMenu.classList.remove('show');
 
-      cv.addEventListener('mousedown', e => {
-        const r=cv.getBoundingClientRect();
-        const x = (e.clientX-r.left)*(CW/r.width), y = (e.clientY-r.top)*(CH/r.height);
-        const u = units.find(u => Math.hypot(u.cx-x, u.cy-y) < 20);
-        if(u) showTapMenu(u, e.clientX, e.clientY);
-        else tapMenu.classList.remove('show');
+      let draggingUnit = null, isDragging = false, dragStart = { x: 0, y: 0 };
+      cv.addEventListener('pointerdown', e => {
+        const r = cv.getBoundingClientRect();
+        const x = (e.clientX - r.left) * (CW / r.width), y = (e.clientY - r.top) * (CH / r.height);
+        const u = units.find(u => Math.hypot(u.cx - x, u.cy - y) < 25);
+        if (u) {
+          draggingUnit = u; dragStart = { x, y }; isDragging = false;
+          cv.setPointerCapture(e.pointerId);
+        } else tapMenu.classList.remove('show');
       });
 
-      function spawnE() {
-        const hp = 60 + wave * 45, spd = 0.6 + wave * 0.05;
-        enemies.push({ hp, maxHp: hp, spd, x: SPX, y: SPY, pathIdx: 0, reward: 8+wave*2, slowed: 0 });
+      cv.addEventListener('pointermove', e => {
+        if (!draggingUnit) return;
+        const r = cv.getBoundingClientRect();
+        const x = (e.clientX - r.left) * (CW / r.width), y = (e.clientY - r.top) * (CH / r.height);
+        if (!isDragging && Math.hypot(x - dragStart.x, y - dragStart.y) > 5) {
+          isDragging = true; tapMenu.classList.remove('show');
+        }
+        if (isDragging) { draggingUnit.cx = x; draggingUnit.cy = y; }
+      });
+
+      cv.addEventListener('pointerup', e => {
+        if (!draggingUnit) return;
+        if (!isDragging) showTapMenu(draggingUnit, e.clientX, e.clientY);
+        else {
+          const r = cv.getBoundingClientRect();
+          const x = (e.clientX - r.left) * (CW / r.width), y = (e.clientY - r.top) * (CH / r.height);
+          const col = Math.floor((x - GX1) / SW_), row = Math.floor((y - GY1) / SH_);
+          if (col >= 0 && col < SCOLS && row >= 0 && row < SROWS) {
+            const newIdx = row * SCOLS + col, target = units.find(u => u.slotIdx === newIdx && u !== draggingUnit);
+            if (target) { target.slotIdx = draggingUnit.slotIdx; }
+            draggingUnit.slotIdx = newIdx;
+          }
+        }
+        draggingUnit = null;
+      });
+
+      function spawnE(isBoss = false) {
+        let t;
+        if (isBoss) {
+          t = { id: 'en_boss', icon: '👾', hpM: 12.0, spdM: 0.3, rM: 10.0, isBoss: true }; // ボス敵のアイコン変更
+        } else {
+          const types = [
+            { id: 'en_std', icon: '🧶', hpM: 1.0, spdM: 1.0, rM: 1.0 }, // ホコリの塊
+            { id: 'en_fast', icon: '🧩', hpM: 0.6, spdM: 1.6, rM: 0.8 }, // パズルピース
+            { id: 'en_tank', icon: '📦', hpM: 2.5, spdM: 0.5, rM: 2.0 } // 段ボール箱
+          ];
+          t = types[Math.floor(Math.random() * types.length)];
+        }
+        const hp = (60 + wave * 45) * t.hpM, spd = (0.6 + wave * 0.05) * t.spdM;
+        enemies.push({ id: t.id, icon: t.icon, hp, maxHp: hp, spd, x: SPX, y: SPY, pathIdx: 0, reward: Math.floor((8 + wave * 2) * t.rM), slowed: 0, isBoss: !!t.isBoss });
       }
 
-      function loop() {
+      let lastTime = 0, dtAcc = 0;
+      function loop(t) {
         if (gameOver) return;
-        globalTick++;
-        
-        if (globalTick % (WAVE_INTERVAL_SEC * FPS) === 0) {
-          wave++;
-          coins += 30 + wave * 5;
-          if(wave % 3 === 0) pray++;
-        }
+        if (!lastTime) { lastTime = t; requestAnimationFrame(loop); return; }
+        dtAcc += (t - lastTime) / 1000;
+        lastTime = t;
 
-        const interval = Math.max(10, 60 - wave * 2);
-        if (globalTick % interval === 0) spawnE();
-
-        enemies.forEach(en => {
-          const ni = (en.pathIdx + 1) % PL;
-          const [tc, tr] = PATH[ni];
-          const tx = tc * CELL + CELL / 2, ty = tr * CELL + CELL / 2;
-          const dx = tx - en.x, dy = ty - en.y, dist = Math.hypot(dx, dy);
-          const s = en.slowed > 0 ? en.spd * 0.4 : en.spd;
-          if (dist < s) { en.x = tx; en.y = ty; en.pathIdx = ni; }
-          else { en.x += dx/dist*s; en.y += dy/dist*s; }
-          if (en.slowed > 0) en.slowed--;
-        });
-
-        units.forEach(u => {
-          if (u.cd > 0) { u.cd--; return; }
-          const target = enemies.find(e => Math.hypot(e.x-u.cx, e.y-u.cy) < u.radius);
-          if (target) {
-            u.cd = u.rate;
-            const dmg = u.baseDamage * emul(u.rarity);
-            bullets.push({ x: u.cx, y: u.cy, tx: target.x, ty: target.y, color: u.color, life: 6, dmg, target, special: u.special });
-          }
-        });
-
-        bullets = bullets.filter(b => {
-          b.life--;
-          if (b.life <= 0) {
-            if(b.target && enemies.includes(b.target)) {
-              b.target.hp -= b.dmg;
-              if(b.special === 'slow') b.target.slowed = 120;
-              if(b.special === 'splash') enemies.forEach(e => { if(Math.hypot(e.x-b.tx, e.y-b.ty) < 40) e.hp -= b.dmg*0.5; });
-              if(b.special === 'chain') {
-                let count = 0;
-                enemies.forEach(e => { if(e !== b.target && Math.hypot(e.x-b.tx, e.y-b.ty) < 60 && count < 2) { e.hp -= b.dmg; count++; }});
-              }
-              for(let i=0; i<3; i++) particles.push({x:b.tx, y:b.ty, vx:(Math.random()-0.5)*4, vy:(Math.random()-0.5)*4, life:15, color:b.color});
+        // ゲームロジックを秒間60回分に固定して実行
+        while (dtAcc >= 1 / 60) {
+          globalTick++;
+          // 15秒ごとにWaveカウントアップと報酬
+          if (globalTick % (WAVE_INTERVAL_SEC * FPS) === 0) {
+            wave++;
+            coins += 30 + wave * 5;
+            if (wave % 3 === 0) pray++;
+            // 5 Waveごとにボス出現
+            if (wave % 5 === 0) {
+              spawnE(true);
+              showFloatingText("巨大おもちゃの襲来！", CW / 2, CH / 2, "#ef4444", 40); // テキスト変更
             }
-            return false;
           }
-          return true;
-        });
 
-        enemies.forEach(e => { if(e.hp <= 0 && !e.dead) { e.dead=true; coins += e.reward; score += e.reward*2; } });
-        enemies = enemies.filter(e => !e.dead);
-        particles.forEach(p => { p.x+=p.vx; p.y+=p.vy; p.life--; });
-        particles = particles.filter(p => p.life > 0);
+          // スポーン間隔（Waveが進むほど過密になる）
+          const interval = Math.max(10, 60 - wave * 2);
+          if (globalTick % interval === 0) spawnE();
 
-        if (enemies.length >= 100) {
-          gameOver = true;
-          $('mo').style.display = 'block';
-          $('mo').innerHTML = `💀 OVERFLOW!<br>Wave: ${wave}<br>Score: ${score}<br><small>TAP TO RESTART</small>`;
-          $('mo').onclick = () => location.reload();
+          enemies.forEach(en => {
+            const ni = (en.pathIdx + 1) % PL;
+            const [tc, tr] = PATH[ni];
+            const tx = tc * CELL + CELL / 2, ty = tr * CELL + CELL / 2;
+            const dx = tx - en.x, dy = ty - en.y, dist = Math.hypot(dx, dy);
+            const s = en.slowed > 0 ? en.spd * 0.4 : en.spd;
+            if (dist < s) { en.x = tx; en.y = ty; en.pathIdx = ni; }
+            else { en.x += (dx / dist) * s; en.y += (dy / dist) * s; }
+            if (en.slowed > 0) en.slowed--;
+          });
+
+          units.forEach(u => {
+            if (u !== draggingUnit) {
+              const p = spos(u.slotIdx);
+              u.cx += (p.x - u.cx) * 0.25;
+              u.cy += (p.y - u.cy) * 0.25;
+            }
+            
+            // アニメーション更新
+            if (u.animScale < 1) u.animScale += (1 - u.animScale) * 0.1;
+            if (u.animScale > 1) u.animScale += (1 - u.animScale) * 0.1;
+            u.animY *= 0.8; // 反動を減衰
+
+            if (u.cd > 0) { u.cd--; return; }
+
+            let target = null;
+
+            // 1. 攻撃範囲内にボスがいるか確認し、優先的にターゲット
+            const bossInReach = enemies.find(e => e.isBoss && Math.hypot(e.x - u.cx, e.y - u.cy) < u.radius);
+            if (bossInReach) {
+              target = bossInReach;
+            } else {
+              // 2. ボスがいない場合、攻撃範囲内で最も近い敵をターゲット
+              let closestEnemy = null;
+              let minDistance = Infinity;
+              enemies.forEach(e => {
+                const dist = Math.hypot(e.x - u.cx, e.y - u.cy);
+                if (dist < u.radius && dist < minDistance) {
+                  minDistance = dist;
+                  closestEnemy = e;
+                }
+              });
+              target = closestEnemy;
+            }
+
+            if (target) {
+              u.cd = u.rate;
+              u.animY = -10; // 発射時の反動
+              const dmg = u.baseDamage * emul(u.rarity);
+              bullets.push({ x: u.cx, y: u.cy, tx: target.x, ty: target.y, color: u.color, life: 6, dmg, target, special: u.special });
+            }
+          });
+
+          bullets = bullets.filter(b => {
+            b.life--;
+            if (b.life <= 0) {
+              if (b.target && enemies.includes(b.target)) {
+                b.target.hp -= b.dmg;
+                if (b.special === 'coin' && Math.random() < 0.1) { coins += 2; showFloatingText("+2 コイン", b.tx, b.ty, "#fbbf24", 14); } // テキスト変更
+                if (b.special === 'crit' && Math.random() < 0.15) { b.target.hp -= b.dmg; showFloatingText("クリティカル！", b.tx, b.ty, "#f87171", 16); } // テキスト変更
+                if (b.special === 'slow') b.target.slowed = 120;
+                if (b.special === 'splash') enemies.forEach(e => { if (Math.hypot(e.x - b.tx, e.y - b.ty) < 40) e.hp -= b.dmg * 0.5; });
+                if (b.special === 'chain') {
+                  let count = 0;
+                  enemies.forEach(e => { if (e !== b.target && Math.hypot(e.x - b.tx, e.y - b.ty) < 60 && count < 2) { e.hp -= b.dmg; count++; } });
+                }
+                for (let i = 0; i < 5; i++) particles.push({ x: b.tx, y: b.ty, vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 8, life: 20, color: '#fff' });
+              }
+              return false;
+            }
+            return true;
+          });
+
+          enemies.forEach(e => { if (e.hp <= 0 && !e.dead) { e.dead = true; coins += e.reward; score += e.reward * 2; } });
+          enemies = enemies.filter(e => !e.dead);
+          particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.life--; });
+          particles = particles.filter(p => p.life > 0);
+
+          floatingTexts.forEach(t => { t.y -= 0.5; t.life--; });
+          floatingTexts = floatingTexts.filter(t => t.life > 0);
+
+          if (enemies.length >= 100) {
+            gameOver = true;
+            $('mo').style.display = 'block';
+            $('mo').innerHTML = `💀 部屋が散らかりすぎた！<br>あそんだ時間: ${wave}<br>楽しさ: ${score}<br><small>タップでやりなおす</small>`; // テキスト変更
+            $('mo').onclick = () => location.reload();
+          }
+          dtAcc -= 1 / 60;
         }
 
         updateUI(); draw();
@@ -511,37 +936,105 @@
       }
 
       function draw() {
-        ctx.fillStyle = '#1c1917'; ctx.fillRect(0,0,CW,CH);
-        ctx.fillStyle = '#0c0a09'; ctx.fillRect(GX1, GY1, GW, GH);
-        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-        for(let i=0; i<=SCOLS; i++) { ctx.beginPath(); ctx.moveTo(GX1+i*SW_, GY1); ctx.lineTo(GX1+i*SW_, GY2); ctx.stroke(); }
-        for(let i=0; i<=SROWS; i++) { ctx.beginPath(); ctx.moveTo(GX1, GY1+i*SH_); ctx.lineTo(GX2, GY1+i*SH_); ctx.stroke(); }
-        
+        ctx.fillStyle = '#f0f0f0'; ctx.fillRect(0, 0, CW, CH); // 背景色を明るく
+        ctx.fillStyle = '#e8e8e8'; ctx.fillRect(GX1, GY1, GW, GH); // グリッド背景色を明るく
+        ctx.strokeStyle = 'rgba(0,0,0,0.08)'; // グリッド線を薄く
+        for (let i = 0; i <= SCOLS; i++) { ctx.beginPath(); ctx.moveTo(GX1 + i * SW_, GY1); ctx.lineTo(GX1 + i * SW_, GY2); ctx.stroke(); }
+        for (let i = 0; i <= SROWS; i++) { ctx.beginPath(); ctx.moveTo(GX1, GY1 + i * SH_); ctx.lineTo(GX2, GY1 + i * SH_); ctx.stroke(); }
+
+        function drawChar(id, x, y, size, color) {
+          const asset = assets[id];
+          if (asset && asset.loaded) {
+            ctx.drawImage(asset.img, x - size / 2, y - size / 2, size, size);
+          }
+        }
+
         enemies.forEach(e => {
-          ctx.font = '20px Arial'; ctx.textAlign='center'; ctx.fillText('👾', e.x, e.y+7);
-          ctx.fillStyle = '#444'; ctx.fillRect(e.x-10, e.y-15, 20, 3);
-          ctx.fillStyle = '#10b981'; ctx.fillRect(e.x-10, e.y-15, 20*(e.hp/e.maxHp), 3);
+          const sz = e.isBoss ? 40 : 20;
+          drawChar(e.id, e.x, e.y, sz, '#ef4444');
+          // HPバー
+          const bw = sz;
+          ctx.fillStyle = '#ccc'; ctx.fillRect(e.x - bw / 2, e.y - sz * 0.7, bw, 3); // HPバーの背景色を明るく
+          ctx.fillStyle = '#ef4444'; ctx.fillRect(e.x - bw / 2, e.y - sz * 0.7, bw * (e.hp / e.maxHp), 3); // HPバーの色を赤に
         });
 
         units.forEach(u => {
-          ctx.beginPath(); ctx.arc(u.cx, u.cy, 13, 0, Math.PI*2);
-          ctx.fillStyle = '#1e293b'; ctx.fill();
+          if (u === draggingUnit && isDragging) {
+            ctx.beginPath();
+            ctx.arc(u.cx, u.cy, u.radius, 0, Math.PI * 2);
+            ctx.fillStyle = u.color + '22';
+            ctx.fill();
+            ctx.strokeStyle = u.color + '66';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+          }
+
+          // 進化可能な時だけじわじわ点滅
+          if (u.stack >= 3 && EVOLVE_NEXT[u.rarity]) {
+            const pulse = (Math.sin(globalTick * 0.1) + 1) / 2; // 0〜1の間を滑らかに移動
+            ctx.beginPath();
+            ctx.arc(u.cx, u.cy, 15 + pulse * 4, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(255, 193, 7, ${0.2 + pulse * 0.5})`; // 黄色系のパルス
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          }
+
+          ctx.save();
+          const idleBob = Math.sin(globalTick * 0.1 + u.idleOff) * 2;
+          ctx.translate(u.cx, u.cy + u.animY + idleBob);
+          ctx.scale(u.animScale, u.animScale);
+
+          // 台座
+          ctx.beginPath();
+          ctx.ellipse(0, 12, 15, 6, 0, 0, Math.PI * 2);
+          ctx.fillStyle = '#bbb'; ctx.fill();
           ctx.strokeStyle = RRC[u.rarity]; ctx.lineWidth = 2; ctx.stroke();
-          ctx.font = '16px Arial'; ctx.textAlign='center'; ctx.fillText(u.icon, u.cx, u.cy+6);
-          if(u.stack > 1) { ctx.font='bold 10px sans-serif'; ctx.fillStyle='#fbbf24'; ctx.fillText('x'+u.stack, u.cx+12, u.cy-8); }
+
+          // キャラクタ本体
+          drawChar(u.id, 0, 0, 32, u.color);
+          
+          if (u.stack > 1) {
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillStyle = '#333333'; // スタック数を濃い色に
+            ctx.textAlign = 'center';
+            ctx.fillText('x' + u.stack, 15, -15);
+          }
+          ctx.restore();
         });
 
         bullets.forEach(b => {
-          ctx.beginPath(); ctx.arc(b.x+(b.tx-b.x)*(1-b.life/6), b.y+(b.ty-b.y)*(1-b.life/6), 3, 0, Math.PI*2);
-          ctx.fillStyle = b.color; ctx.fill();
+          const t = 1 - b.life / 6;
+          const px = b.x + (b.tx - b.x) * t;
+          const py = b.y + (b.ty - b.y) * t;
+          ctx.beginPath(); ctx.arc(px, py, 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#fff'; ctx.shadowBlur = 10; ctx.shadowColor = b.color;
+          ctx.fill();
+          ctx.shadowBlur = 0;
         });
 
-        particles.forEach(p => { ctx.globalAlpha = p.life/15; ctx.fillStyle=p.color; ctx.fillRect(p.x, p.y, 2, 2); });
+        particles.forEach(p => { ctx.globalAlpha = p.life / 20; ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, 3, 3); });
+        ctx.globalAlpha = 1;
+
+        floatingTexts.forEach(t => {
+          ctx.globalAlpha = t.life / 60;
+          ctx.fillStyle = t.color;
+          ctx.font = `bold ${t.size}px Arial`;
+          ctx.textAlign = 'center';
+          ctx.fillText(t.txt, t.x, t.y);
+        });
+
+        if (flashIntensity > 0) {
+          ctx.globalAlpha = flashIntensity / 60;
+          ctx.fillStyle = '#ffc107'; // フラッシュの色を明るい黄色に
+          ctx.fillRect(0, 0, CW, CH);
+          flashIntensity--;
+        }
         ctx.globalAlpha = 1;
       }
 
-      loop();
+      requestAnimationFrame(loop);
     })();
   </script>
 </body>
-</html>
