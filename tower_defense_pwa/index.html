@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -10,45 +11,262 @@
   <link rel="apple-touch-icon" href="icon-192.png">
   <title>タワーディフェンス</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif;
-        -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
-        touch-action: manipulation; }
-    body { background: #111827; color: #eee; padding: 8px; overflow-x: hidden; }
-    #top { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; }
-    .cb { background: #1f2937; border: 1px solid #374151; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 600; color: #eee; }
-    #wtb { border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700; border: 1px solid #4a8f4a; background: #1a3a1a; color: #8fff8f; }
-    #eg { flex: 1; min-width: 80px; }
-    #eg-lbl { font-size: 10px; color: #9ca3af; margin-bottom: 2px; }
-    #eg-track { height: 8px; background: #1f2937; border-radius: 4px; overflow: hidden; border: 1px solid #374151; }
-    #eg-fill { height: 100%; width: 0%; border-radius: 4px; background: #ef4444; }
-    #eg-txt { font-size: 10px; color: #9ca3af; margin-top: 1px; }
-    #canvas-wrap { position: relative; width: 100%; }
-    canvas { display: block; border-radius: 8px; border: 2px solid #374151; width: 100%; height: auto; touch-action: none; }
-    #bottom { display: flex; gap: 6px; align-items: flex-start; flex-wrap: wrap; margin-top: 8px; }
-    .bs { padding: 10px 14px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; min-height: 44px; }
-    .bs:active { transform: scale(.97); }
-    .bs:disabled { opacity: .3; cursor: default; }
-    #bn { background: #2563eb; color: white; }
-    #brr { background: #7c3aed; color: white; }
-    .cl { font-size: 10px; color: #9ca3af; margin-top: 3px; text-align: center; }
-    #ep { display: flex; gap: 5px; }
-    .eb { padding: 7px 9px; border: 2px solid transparent; border-radius: 7px; cursor: pointer; font-size: 11px; font-weight: 700; text-align: center; min-width: 62px; min-height: 44px; }
-    .eb:active { transform: scale(.96); }
-    .eb:disabled { opacity: .3; cursor: default; }
-    #enn { background: #1a3a1a; border-color: #3B6D11; color: #86efac; }
-    #err { background: #1a2a3e; border-color: #2563eb; color: #93c5fd; }
-    #esr { background: #2a1a3e; border-color: #7c3aed; color: #c4b5fd; }
-    .elv { font-size: 14px; font-weight: 800; }
-    .eco { font-size: 9px; opacity: .75; margin-top: 1px; }
-    #ui { font-size: 10px; color: #9ca3af; align-self: center; line-height: 1.7; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    html {
+      touch-action: manipulation;
+    }
+
+    body {
+      background: #111827;
+      color: #eee;
+      padding: 8px;
+      overflow-x: hidden;
+    }
+
+    #top {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .cb {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #eee;
+    }
+
+    #wtb {
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid #4a8f4a;
+      background: #1a3a1a;
+      color: #8fff8f;
+    }
+
+    #eg {
+      flex: 1;
+      min-width: 80px;
+    }
+
+    #eg-lbl {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-bottom: 2px;
+    }
+
+    #eg-track {
+      height: 8px;
+      background: #1f2937;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid #374151;
+    }
+
+    #eg-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 4px;
+      background: #ef4444;
+    }
+
+    #eg-txt {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-top: 1px;
+    }
+
+    #canvas-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    canvas {
+      display: block;
+      border-radius: 8px;
+      border: 2px solid #374151;
+      width: 100%;
+      height: auto;
+      touch-action: none;
+    }
+
+    #bottom {
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .bs {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      min-height: 44px;
+    }
+
+    .bs:active {
+      transform: scale(.97);
+    }
+
+    .bs:disabled {
+      opacity: .3;
+      cursor: default;
+    }
+
+    #bn {
+      background: #2563eb;
+      color: white;
+    }
+
+    #brr {
+      background: #7c3aed;
+      color: white;
+    }
+
+    .cl {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-top: 3px;
+      text-align: center;
+    }
+
+    #ep {
+      display: flex;
+      gap: 5px;
+    }
+
+    .eb {
+      padding: 7px 9px;
+      border: 2px solid transparent;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      min-width: 62px;
+      min-height: 44px;
+    }
+
+    .eb:active {
+      transform: scale(.96);
+    }
+
+    .eb:disabled {
+      opacity: .3;
+      cursor: default;
+    }
+
+    #enn {
+      background: #1a3a1a;
+      border-color: #3B6D11;
+      color: #86efac;
+    }
+
+    #err {
+      background: #1a2a3e;
+      border-color: #2563eb;
+      color: #93c5fd;
+    }
+
+    #esr {
+      background: #2a1a3e;
+      border-color: #7c3aed;
+      color: #c4b5fd;
+    }
+
+    .elv {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .eco {
+      font-size: 9px;
+      opacity: .75;
+      margin-top: 1px;
+    }
+
+    #ui {
+      font-size: 10px;
+      color: #9ca3af;
+      align-self: center;
+      line-height: 1.7;
+    }
+
     /* タップメニュー */
-    #tap-menu { display: none; position: fixed; z-index: 100; background: #1f2937; border: 1px solid #4b5563; border-radius: 12px; padding: 8px; gap: 8px; flex-direction: column; box-shadow: 0 8px 24px rgba(0,0,0,.6); min-width: 140px; }
-    #tap-menu.show { display: flex; }
-    .tap-menu-title { font-size: 12px; color: #9ca3af; text-align: center; padding: 2px 0 4px; border-bottom: 1px solid #374151; }
-    .tap-menu-btn { padding: 10px 14px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; text-align: center; }
-    #tmb-evolve { background: #78350f; color: #fef3c7; border: 2px solid #f59e0b; }
-    #tmb-sell   { background: #1f2937; color: #fca5a5; border: 2px solid #ef4444; }
-    #tmb-cancel { background: #374151; color: #d1d5db; border: none; }
+    #tap-menu {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      background: #1f2937;
+      border: 1px solid #4b5563;
+      border-radius: 12px;
+      padding: 8px;
+      gap: 8px;
+      flex-direction: column;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .6);
+      min-width: 140px;
+    }
+
+    #tap-menu.show {
+      display: flex;
+    }
+
+    .tap-menu-title {
+      font-size: 12px;
+      color: #9ca3af;
+      text-align: center;
+      padding: 2px 0 4px;
+      border-bottom: 1px solid #374151;
+    }
+
+    .tap-menu-btn {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    #tmb-evolve {
+      background: #78350f;
+      color: #fef3c7;
+      border: 2px solid #f59e0b;
+    }
+
+    #tmb-sell {
+      background: #1f2937;
+      color: #fca5a5;
+      border: 2px solid #ef4444;
+    }
+
+    #tmb-cancel {
+      background: #374151;
+      color: #d1d5db;
+      border: none;
+    }
   </style>
 </head>
 
@@ -78,7 +296,8 @@
   </div>
 
   <div style="position:relative;width:100%;">
-    <canvas id="c" width="540" height="360" style="display:block;width:100%;height:auto;border-radius:8px;border:2px solid #374151;touch-action:none;"></canvas>
+    <canvas id="c" width="540" height="360"
+      style="display:block;width:100%;height:auto;border-radius:8px;border:2px solid #374151;touch-action:none;"></canvas>
     <div id="mo" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
     background:rgba(0,0,0,.9);color:white;padding:20px 30px;border-radius:12px;
     font-size:18px;font-weight:800;text-align:center;line-height:1.8;
@@ -280,7 +499,7 @@
         box.innerHTML = '';
         const valid = [...pendingEvolve].filter(si => {
           const u = units.find(u => u.slotIdx === si);
-          return u && (u.stack||1) >= 3 && EVOLVE_NEXT[u.rarity];
+          return u && (u.stack || 1) >= 3 && EVOLVE_NEXT[u.rarity];
         });
         if (!valid.length) { pendingEvolve.clear(); box.style.display = 'none'; return; }
         box.style.display = 'flex';
@@ -301,7 +520,7 @@
 
       function doEvolve(slotIdx) {
         const t = units.find(u => u.slotIdx === slotIdx);
-        if (!t || (t.stack||1) < 3 || !EVOLVE_NEXT[t.rarity]) {
+        if (!t || (t.stack || 1) < 3 || !EVOLVE_NEXT[t.rarity]) {
           pendingEvolve.delete(slotIdx); renderEvolveButtons(); return;
         }
         const pool = EVOLVE_NEXT[t.rarity]();
@@ -312,11 +531,11 @@
         t.stack = 1; t.ft = 50;
         pendingEvolve.delete(slotIdx);
         // 進化後、場の同キャラと合体
-        const same = units.find(u => u !== t && u.stackId === t.stackId && u.rarity === t.rarity && (u.stack||1) < 3);
+        const same = units.find(u => u !== t && u.stackId === t.stackId && u.rarity === t.rarity && (u.stack || 1) < 3);
         if (same) {
-          same.stack = (same.stack||1) + 1; same.ft = 20;
+          same.stack = (same.stack || 1) + 1; same.ft = 20;
           units = units.filter(u => u !== t);
-          if ((same.stack||1) >= 3 && EVOLVE_NEXT[same.rarity]) pendingEvolve.add(same.slotIdx);
+          if ((same.stack || 1) >= 3 && EVOLVE_NEXT[same.rarity]) pendingEvolve.add(same.slotIdx);
         }
         renderEvolveButtons(); eud();
       }
@@ -325,11 +544,11 @@
         const ch = { ...pool[Math.floor(Math.random() * pool.length)] };
         ch.stackId = ch.id;
         // 同stackId・同rarityでstack<3 → スタック（スロット消費なし）
-        const stackable = units.find(u => u.stackId === ch.stackId && u.rarity === ch.rarity && (u.stack||1) < 3);
+        const stackable = units.find(u => u.stackId === ch.stackId && u.rarity === ch.rarity && (u.stack || 1) < 3);
         if (stackable) {
-          stackable.stack = (stackable.stack||1) + 1;
+          stackable.stack = (stackable.stack || 1) + 1;
           stackable.ft = 20;
-          if ((stackable.stack||1) >= 3 && EVOLVE_NEXT[stackable.rarity]) {
+          if ((stackable.stack || 1) >= 3 && EVOLVE_NEXT[stackable.rarity]) {
             pendingEvolve.add(stackable.slotIdx); renderEvolveButtons();
           }
           eud(); return;
@@ -341,8 +560,8 @@
         units.push({ ...ch, slotIdx: s, cx: p.x, cy: p.y, cd: 0, ft: 0, stack: 1 });
         eud();
       }
-      $('bn').onclick  = () => { if (coins < 50) return; coins -= 50; summon(PN); };
-      $('brr').onclick = () => { if (pray < 1)  return; pray--;       summon(PP); };
+      $('bn').onclick = () => { if (coins < 50) return; coins -= 50; summon(PN); };
+      $('brr').onclick = () => { if (pray < 1) return; pray--; summon(PP); };
 
       // ===== タッチ/マウス イベント =====
       // canvas座標取得（スケーリング補正あり）
@@ -354,16 +573,16 @@
       }
 
       // タップメニュー
-      const tapMenu   = document.getElementById('tap-menu');
-      const tmbTitle  = document.getElementById('tmb-title');
+      const tapMenu = document.getElementById('tap-menu');
+      const tmbTitle = document.getElementById('tmb-title');
       const tmbEvolve = document.getElementById('tmb-evolve');
-      const tmbSell   = document.getElementById('tmb-sell');
+      const tmbSell = document.getElementById('tmb-sell');
       const tmbCancel = document.getElementById('tmb-cancel');
       let tapTarget = null;
 
       function showTapMenu(u, clientX, clientY) {
         tapTarget = u;
-        tmbTitle.textContent = u.icon + ' ' + (u.stack > 1 ? '×' + u.stack + ' ' : '') + ({n:'N',r:'R',sr:'SR'}[u.rarity]);
+        tmbTitle.textContent = u.icon + ' ' + (u.stack > 1 ? '×' + u.stack + ' ' : '') + ({ n: 'N', r: 'R', sr: 'SR' }[u.rarity]);
         // 進化可能かチェック
         const canEvolve = (u.stack || 1) >= 3 && EVOLVE_NEXT[u.rarity];
         tmbEvolve.style.display = canEvolve ? '' : 'none';
@@ -374,7 +593,7 @@
         if (x + menuW > vw) x = clientX - menuW - 10;
         if (y + menuH > vh) y = vh - menuH - 10;
         tapMenu.style.left = x + 'px';
-        tapMenu.style.top  = y + 'px';
+        tapMenu.style.top = y + 'px';
         tapMenu.classList.add('show');
       }
 
@@ -424,7 +643,7 @@
         e.preventDefault();
         const { x, y } = gcp(e);
         const dx = x - pointerStart.x, dy = y - pointerStart.y;
-        if (!dragStarted && Math.sqrt(dx*dx+dy*dy) > DRAG_THRESHOLD) {
+        if (!dragStarted && Math.sqrt(dx * dx + dy * dy) > DRAG_THRESHOLD) {
           // ドラッグ開始
           dragStarted = true;
           du = pointerStart.u;
@@ -462,15 +681,15 @@
       }
 
       // マウス
-      cv.addEventListener('mousedown',  onPointerDown);
-      cv.addEventListener('mousemove',  onPointerMove);
-      cv.addEventListener('mouseup',    onPointerUp);
+      cv.addEventListener('mousedown', onPointerDown);
+      cv.addEventListener('mousemove', onPointerMove);
+      cv.addEventListener('mouseup', onPointerUp);
       cv.addEventListener('mouseleave', onPointerCancel);
       // タッチ
-      cv.addEventListener('touchstart',  onPointerDown,  { passive: false });
-      cv.addEventListener('touchmove',   onPointerMove,  { passive: false });
-      cv.addEventListener('touchend',    onPointerUp,    { passive: false });
-      cv.addEventListener('touchcancel', onPointerCancel,{ passive: false });
+      cv.addEventListener('touchstart', onPointerDown, { passive: false });
+      cv.addEventListener('touchmove', onPointerMove, { passive: false });
+      cv.addEventListener('touchend', onPointerUp, { passive: false });
+      cv.addEventListener('touchcancel', onPointerCancel, { passive: false });
       // 右クリック（PC）→ メニュー
       cv.addEventListener('contextmenu', e => {
         e.preventDefault();
