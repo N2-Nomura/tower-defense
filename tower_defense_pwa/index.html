@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="タワーDF">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>タワーディフェンス</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif;
+        -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+    body { background: #111827; color: #eee; padding: 8px; overflow-x: hidden; }
+    #top { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; }
+    .cb { background: #1f2937; border: 1px solid #374151; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 600; color: #eee; }
+    #wtb { border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700; border: 1px solid #4a8f4a; background: #1a3a1a; color: #8fff8f; }
+    #eg { flex: 1; min-width: 80px; }
+    #eg-lbl { font-size: 10px; color: #9ca3af; margin-bottom: 2px; }
+    #eg-track { height: 8px; background: #1f2937; border-radius: 4px; overflow: hidden; border: 1px solid #374151; }
+    #eg-fill { height: 100%; width: 0%; border-radius: 4px; background: #ef4444; }
+    #eg-txt { font-size: 10px; color: #9ca3af; margin-top: 1px; }
+    #canvas-wrap { position: relative; width: 100%; }
+    canvas { display: block; border-radius: 8px; border: 2px solid #374151; width: 100%; height: auto; touch-action: none; }
+    #bottom { display: flex; gap: 6px; align-items: flex-start; flex-wrap: wrap; margin-top: 8px; }
+    .bs { padding: 10px 14px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; min-height: 44px; }
+    .bs:active { transform: scale(.97); }
+    .bs:disabled { opacity: .3; cursor: default; }
+    #bn { background: #2563eb; color: white; }
+    #brr { background: #7c3aed; color: white; }
+    .cl { font-size: 10px; color: #9ca3af; margin-top: 3px; text-align: center; }
+    #ep { display: flex; gap: 5px; }
+    .eb { padding: 7px 9px; border: 2px solid transparent; border-radius: 7px; cursor: pointer; font-size: 11px; font-weight: 700; text-align: center; min-width: 62px; min-height: 44px; }
+    .eb:active { transform: scale(.96); }
+    .eb:disabled { opacity: .3; cursor: default; }
+    #enn { background: #1a3a1a; border-color: #3B6D11; color: #86efac; }
+    #err { background: #1a2a3e; border-color: #2563eb; color: #93c5fd; }
+    #esr { background: #2a1a3e; border-color: #7c3aed; color: #c4b5fd; }
+    .elv { font-size: 14px; font-weight: 800; }
+    .eco { font-size: 9px; opacity: .75; margin-top: 1px; }
+    #ui { font-size: 10px; color: #9ca3af; align-self: center; line-height: 1.7; }
+    /* タップメニュー */
+    #tap-menu { display: none; position: fixed; z-index: 100; background: #1f2937; border: 1px solid #4b5563; border-radius: 12px; padding: 8px; gap: 8px; flex-direction: column; box-shadow: 0 8px 24px rgba(0,0,0,.6); min-width: 140px; }
+    #tap-menu.show { display: flex; }
+    .tap-menu-title { font-size: 12px; color: #9ca3af; text-align: center; padding: 2px 0 4px; border-bottom: 1px solid #374151; }
+    .tap-menu-btn { padding: 10px 14px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; text-align: center; }
+    #tmb-evolve { background: #78350f; color: #fef3c7; border: 2px solid #f59e0b; }
+    #tmb-sell   { background: #1f2937; color: #fca5a5; border: 2px solid #ef4444; }
+    #tmb-cancel { background: #374151; color: #d1d5db; border: none; }
+  </style>
+</head>
+
+    .cl {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-top: 2px;
+      text-align: center;
+    }
+
+    #ep {
+      display: flex;
+      gap: 5px;
+    }
+
+    .eb {
+      padding: 6px 8px;
+      border: 2px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      min-width: 64px;
+      background: #1f2937;
+      transition: all .15s;
+    }
+
+    .eb:hover {
+      transform: translateY(-1px);
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- タップメニュー -->
+  <div id="tap-menu">
+    <div class="tap-menu-title" id="tmb-title">キャラ操作</div>
+    <button class="tap-menu-btn" id="tmb-evolve" style="display:none">✨ 進化する</button>
+    <button class="tap-menu-btn" id="tmb-sell">💰 売却</button>
+    <button class="tap-menu-btn" id="tmb-cancel">✕ キャンセル</button>
+  </div>
+
+  <div id="top">
+    <div class="cb">💰 <span id="sc">200</span></div>
+    <div class="cb">🔮 <span id="sp">3</span></div>
+    <div class="cb">Wave <span id="sw">0</span></div>
+    <div class="cb">Score <span id="ss">0</span></div>
+    <div id="wtb"><span id="wt-lbl">開始まで 3s</span></div>
+    <div id="eg">
+      <div id="eg-lbl">道の敵数</div>
+      <div id="eg-track">
+        <div id="eg-fill"></div>
+      </div>
+      <div id="eg-txt"><span id="se">0</span> / 100</div>
+    </div>
+  </div>
+
+  <div style="position:relative;width:100%;">
+    <canvas id="c" width="540" height="360" style="display:block;width:100%;height:auto;border-radius:8px;border:2px solid #374151;touch-action:none;"></canvas>
+    <div id="mo" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    background:rgba(0,0,0,.9);color:white;padding:20px 30px;border-radius:12px;
+    font-size:18px;font-weight:800;text-align:center;line-height:1.8;
+    border:2px solid #374151;pointer-events:none;white-space:nowrap;"></div>
+  </div>
+
+  <div id="bottom">
+    <div style="text-align:center">
+      <button class="bs" id="bn">🎲 召喚</button>
+      <div class="cl">💰 50コイン</div>
+    </div>
+    <div style="text-align:center">
+      <button class="bs" id="brr">✨ お祈り召喚</button>
+      <div class="cl">🔮 お祈り石 1個</div>
+    </div>
+    <div id="ep">
+      <div style="text-align:center">
+        <button class="eb" id="enn">
+          <div>🟢 N強化</div>
+          <div class="elv" id="enlv">Lv0</div>
+          <div class="eco" id="enco">💰80</div>
+        </button>
+      </div>
+      <div style="text-align:center">
+        <button class="eb" id="err">
+          <div>🔵 R強化</div>
+          <div class="elv" id="erlv">Lv0</div>
+          <div class="eco" id="erco">💰150</div>
+        </button>
+      </div>
+      <div style="text-align:center">
+        <button class="eb" id="esr">
+          <div>🟣 SR強化</div>
+          <div class="elv" id="esrlv">Lv0</div>
+          <div class="eco" id="esrco">💰280</div>
+        </button>
+      </div>
+    </div>
+    <div id="ui">キャラ: <span id="suu">0</span>/24<br>ドラッグで移動<br>タップでメニュー</div>
+  </div>
+
+  <script>
+    (function () {
+      const cv = document.getElementById('c');
+      const ctx = cv.getContext('2d');
+      const CW = cv.width, CH = cv.height;
+
+      // Road: 2-cell thick ring. Cell size chosen so road fills canvas nicely.
+      const CELL = 30; // 30px per cell
+      const FC = Math.floor(CW / CELL); // 18
+      const FR = Math.floor(CH / CELL); // 12
+
+      // Inner green area (inside road)
+      const RW = 2; // road width in cells
+      const GX1 = RW * CELL, GY1 = RW * CELL;
+      const GX2 = CW - RW * CELL, GY2 = CH - RW * CELL;
+      const GW = GX2 - GX1, GH = GY2 - GY1; // 420 x 240
+
+      // 24 placement slots: 6 cols x 4 rows
+      const SCOLS = 6, SROWS = 4;
+      const SW_ = GW / SCOLS, SH_ = GH / SROWS;
+
+      function spos(i) { return { x: GX1 + (i % SCOLS) * SW_ + SW_ / 2, y: GY1 + Math.floor(i / SCOLS) * SH_ + SH_ / 2 }; }
+      function p2s(px, py) {
+        if (px < GX1 || px > GX2 || py < GY1 || py > GY2) return -1;
+        return Math.floor((py - GY1) / SH_) * SCOLS + Math.floor((px - GX1) / SW_);
+      }
+
+      // Road path: clockwise ring at cell offset 1 (inner edge of road)
+      function buildRing(o) {
+        const pts = [];
+        const c1 = o, c2 = FC - 1 - o, r1 = o, r2 = FR - 1 - o;
+        for (let c = c1; c <= c2; c++) pts.push([c, r1]);
+        for (let r = r1 + 1; r <= r2; r++) pts.push([c2, r]);
+        for (let c = c2 - 1; c >= c1; c--) pts.push([c, r2]);
+        for (let r = r2 - 1; r >= r1 + 1; r--) pts.push([c1, r]);
+        return pts;
+      }
+      const FULL = buildRing(1);
+      // Start path at bottom-left of inner ring: col=1, row=FR-2=10
+      const si = Math.max(0, FULL.findIndex(([c, r]) => c === 1 && r === FR - 2));
+      const PATH = [...FULL.slice(si), ...FULL.slice(0, si)];
+      const PL = PATH.length;
+      const SPX = PATH[0][0] * CELL + CELL / 2;
+      const SPY = PATH[0][1] * CELL + CELL / 2;
+
+      // Constants
+      const ER = 12; // enemy radius
+      const FPS = 60;
+      const FIRST_DELAY = 3;  // seconds before wave 1
+      const WAVE_INTERVAL = 15; // seconds between waves
+      const SPAWN_INTERVAL = 60; // frames between each enemy spawn (=0.1s)
+
+      // Rarity colors
+      const RRC = { n: '#4ade80', r: '#60a5fa', sr: '#c084fc' };
+      const RRB = { n: 'N', r: 'R', sr: 'SR' };
+
+      // Enhance levels
+      const EL = { n: 0, r: 0, sr: 0 };
+      function emul(rr) { return 1 + EL[rr] * 0.1; }
+      function ecost(rr) {
+        const b = { n: 80, r: 150, sr: 280 }[rr], m = { n: 1.4, r: 1.5, sr: 1.6 }[rr];
+        return Math.floor(b * Math.pow(m, EL[rr]));
+      }
+
+      // Character definitions
+      const CN = [
+        { icon: '⚔️', color: '#60a5fa', radius: 65, baseDamage: 22, rate: 48, special: null, rarity: 'n' },
+        { icon: '🏹', color: '#4ade80', radius: 85, baseDamage: 14, rate: 40, special: null, rarity: 'n' },
+        { icon: '🧙', color: '#c084fc', radius: 70, baseDamage: 30, rate: 80, special: 'splash', rarity: 'n' },
+        { icon: '💊', color: '#34d399', radius: 62, baseDamage: 10, rate: 36, special: 'slow', rarity: 'n' },
+      ];
+      const CR = [
+        { icon: '🛡️', color: '#60a5fa', radius: 75, baseDamage: 38, rate: 55, special: null, rarity: 'r' },
+        { icon: '🎯', color: '#4ade80', radius: 95, baseDamage: 28, rate: 38, special: null, rarity: 'r' },
+        { icon: '🧝', color: '#c084fc', radius: 80, baseDamage: 50, rate: 75, special: 'splash', rarity: 'r' },
+        { icon: '📿', color: '#34d399', radius: 72, baseDamage: 20, rate: 32, special: 'slow', rarity: 'r' },
+      ];
+      const CSR = [
+        { icon: '🐉', color: '#f87171', radius: 110, baseDamage: 70, rate: 62, special: 'splash', rarity: 'sr' },
+        { icon: '👼', color: '#fbbf24', radius: 100, baseDamage: 34, rate: 20, special: 'chain', rarity: 'sr' },
+        { icon: '🥷', color: '#d1d5db', radius: 75, baseDamage: 24, rate: 12, special: null, rarity: 'sr' },
+        { icon: '🔮', color: '#a78bfa', radius: 125, baseDamage: 50, rate: 65, special: 'splash', rarity: 'sr' },
+      ];
+      const PN = [...CN, ...CN, ...CN, ...CR];
+      const PP = [...CR, ...CR, ...CSR];
+
+      // Game state
+      let coins = 200, pray = 3, score = 0, wave = 0;
+      let units = [], enemies = [], bullets = [], particles = [];
+      let waveActive = false, spawnQueue = [], spawnTick = 0;
+      let gameOver = false, gameWon = false;
+      let timerFrames = FIRST_DELAY * FPS;
+      let timerTotal = FIRST_DELAY * FPS;
+      let du = null, ddx = 0, ddy = 0, dos = -1;
+
+      const $ = id => document.getElementById(id);
+
+      // UI update
+      function updateTimerUI() {
+        const el = $('wtb'), lb = $('wt-lbl');
+        if (gameOver || gameWon) { el.style.display = 'none'; return; }
+        if (waveActive) {
+          lb.textContent = '⚔️ Wave ' + wave + ' 進行中';
+          el.style.background = '#1e3a5f'; el.style.color = '#93c5fd'; el.style.borderColor = '#3b82f6';
+        } else {
+          const s = Math.ceil(timerFrames / FPS);
+          lb.textContent = (wave === 0 ? '開始まで ' : '次のWave ') + s + 's';
+          if (s <= 5) { el.style.background = '#3f1f1f'; el.style.color = '#fca5a5'; el.style.borderColor = '#ef4444'; }
+          else if (s <= 10) { el.style.background = '#3f2d1a'; el.style.color = '#fcd34d'; el.style.borderColor = '#f59e0b'; }
+          else { el.style.background = '#1a3a1a'; el.style.color = '#86efac'; el.style.borderColor = '#22c55e'; }
+        }
+      }
+
+      function eud() {
+        $('sc').textContent = coins; $('sp').textContent = pray;
+        $('sw').textContent = wave; $('ss').textContent = score;
+        $('suu').textContent = units.length;
+        const n = enemies.length; $('se').textContent = n;
+        $('eg-fill').style.width = Math.min(n, 100) + '%';
+        $('eg-fill').style.background = n >= 80 ? '#ef4444' : n >= 50 ? '#f59e0b' : '#ef4444';
+        $('bn').disabled = coins < 50 || units.length >= 24 || gameOver || gameWon;
+        $('brr').disabled = pray < 1 || units.length >= 24 || gameOver || gameWon;
+        ['n', 'r', 'sr'].forEach(r => {
+          const prefix = r === 'n' ? 'en' : (r === 'r' ? 'er' : 'esr');
+
+          $(prefix + 'lv').textContent = 'Lv' + EL[r];
+          $(prefix + 'co').textContent = '💰' + ecost(r);
+
+          const btnId = r === 'n' ? 'enn' : (r === 'r' ? 'err' : 'esr');
+          $(btnId).disabled = coins < ecost(r) || gameOver || gameWon;
+        });
+      }
+
+      // Enhance
+      function enh(rr) { const c = ecost(rr); if (coins < c) return; coins -= c; EL[rr]++; units.filter(u => u.rarity === rr).forEach(u => u.ft = 30); eud(); }
+      $('enn').onclick = () => enh('n');
+      $('err').onclick = () => enh('r');
+      $('esr').onclick = () => enh('sr');
+
+      // Summon
+      const EVOLVE_NEXT = { n: () => CR, r: () => CSR };
+      let pendingEvolve = new Set();
+
+      function fempty() {
+        const used = new Set(units.map(u => u.slotIdx));
+        for (let i = 0; i < 24; i++) if (!used.has(i)) return i;
+        return -1;
+      }
+
+      function renderEvolveButtons() {
+        let box = document.getElementById('evolve-box');
+        if (!box) {
+          box = document.createElement('div');
+          box.id = 'evolve-box';
+          box.style.cssText = 'display:none;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px;';
+          document.getElementById('bottom').after(box);
+        }
+        box.innerHTML = '';
+        const valid = [...pendingEvolve].filter(si => {
+          const u = units.find(u => u.slotIdx === si);
+          return u && (u.stack||1) >= 3 && EVOLVE_NEXT[u.rarity];
+        });
+        if (!valid.length) { pendingEvolve.clear(); box.style.display = 'none'; return; }
+        box.style.display = 'flex';
+        const lbl = document.createElement('span');
+        lbl.style.cssText = 'font-size:11px;color:#fcd34d;font-weight:700;align-self:center;';
+        lbl.textContent = '✨ 進化可能！';
+        box.appendChild(lbl);
+        valid.forEach(si => {
+          const u = units.find(u => u.slotIdx === si);
+          if (!u) return;
+          const btn = document.createElement('button');
+          btn.style.cssText = 'padding:8px 14px;background:#78350f;border:2px solid #f59e0b;border-radius:8px;color:#fef3c7;font-size:13px;font-weight:700;cursor:pointer;min-height:44px;';
+          btn.textContent = u.icon + ' → ?';
+          btn.onclick = () => doEvolve(si);
+          box.appendChild(btn);
+        });
+      }
+
+      function doEvolve(slotIdx) {
+        const t = units.find(u => u.slotIdx === slotIdx);
+        if (!t || (t.stack||1) < 3 || !EVOLVE_NEXT[t.rarity]) {
+          pendingEvolve.delete(slotIdx); renderEvolveButtons(); return;
+        }
+        const pool = EVOLVE_NEXT[t.rarity]();
+        const ev = { ...pool[Math.floor(Math.random() * pool.length)] };
+        t.stackId = ev.id; t.id = ev.id; t.icon = ev.icon; t.color = ev.color;
+        t.radius = ev.radius; t.baseDamage = ev.baseDamage;
+        t.rate = ev.rate; t.special = ev.special; t.rarity = ev.rarity;
+        t.stack = 1; t.ft = 50;
+        pendingEvolve.delete(slotIdx);
+        // 進化後、場の同キャラと合体
+        const same = units.find(u => u !== t && u.stackId === t.stackId && u.rarity === t.rarity && (u.stack||1) < 3);
+        if (same) {
+          same.stack = (same.stack||1) + 1; same.ft = 20;
+          units = units.filter(u => u !== t);
+          if ((same.stack||1) >= 3 && EVOLVE_NEXT[same.rarity]) pendingEvolve.add(same.slotIdx);
+        }
+        renderEvolveButtons(); eud();
+      }
+
+      function summon(pool) {
+        const ch = { ...pool[Math.floor(Math.random() * pool.length)] };
+        ch.stackId = ch.id;
+        // 同stackId・同rarityでstack<3 → スタック（スロット消費なし）
+        const stackable = units.find(u => u.stackId === ch.stackId && u.rarity === ch.rarity && (u.stack||1) < 3);
+        if (stackable) {
+          stackable.stack = (stackable.stack||1) + 1;
+          stackable.ft = 20;
+          if ((stackable.stack||1) >= 3 && EVOLVE_NEXT[stackable.rarity]) {
+            pendingEvolve.add(stackable.slotIdx); renderEvolveButtons();
+          }
+          eud(); return;
+        }
+        // スロット上限チェック: 新しいスロットが必要な場合のみ24制限
+        if (units.length >= 24) return;
+        const s = fempty(); if (s < 0) return;
+        const p = spos(s);
+        units.push({ ...ch, slotIdx: s, cx: p.x, cy: p.y, cd: 0, ft: 0, stack: 1 });
+        eud();
+      }
+      $('bn').onclick  = () => { if (coins < 50) return; coins -= 50; summon(PN); };
+      $('brr').onclick = () => { if (pray < 1)  return; pray--;       summon(PP); };
+
+      // ===== タッチ/マウス イベント =====
+      // canvas座標取得（スケーリング補正あり）
+      function gcp(e) {
+        const r = cv.getBoundingClientRect();
+        const scaleX = CW / r.width, scaleY = CH / r.height;
+        const s = e.touches ? e.touches[0] : e;
+        return { x: (s.clientX - r.left) * scaleX, y: (s.clientY - r.top) * scaleY };
+      }
+
+      // タップメニュー
+      const tapMenu   = document.getElementById('tap-menu');
+      const tmbTitle  = document.getElementById('tmb-title');
+      const tmbEvolve = document.getElementById('tmb-evolve');
+      const tmbSell   = document.getElementById('tmb-sell');
+      const tmbCancel = document.getElementById('tmb-cancel');
+      let tapTarget = null;
+
+      function showTapMenu(u, clientX, clientY) {
+        tapTarget = u;
+        tmbTitle.textContent = u.icon + ' ' + (u.stack > 1 ? '×' + u.stack + ' ' : '') + ({n:'N',r:'R',sr:'SR'}[u.rarity]);
+        // 進化可能かチェック
+        const canEvolve = (u.stack || 1) >= 3 && EVOLVE_NEXT[u.rarity];
+        tmbEvolve.style.display = canEvolve ? '' : 'none';
+        // 位置調整（画面外に出ないように）
+        const menuW = 160, menuH = canEvolve ? 160 : 120;
+        const vw = window.innerWidth, vh = window.innerHeight;
+        let x = clientX + 10, y = clientY - 20;
+        if (x + menuW > vw) x = clientX - menuW - 10;
+        if (y + menuH > vh) y = vh - menuH - 10;
+        tapMenu.style.left = x + 'px';
+        tapMenu.style.top  = y + 'px';
+        tapMenu.classList.add('show');
+      }
+
+      function hideTapMenu() { tapMenu.classList.remove('show'); tapTarget = null; }
+
+      tmbEvolve.onclick = () => {
+        if (!tapTarget) { hideTapMenu(); return; }
+        const slotIdx = tapTarget.slotIdx;
+        hideTapMenu();
+        doEvolve(slotIdx);
+      };
+      tmbSell.onclick = () => {
+        if (!tapTarget) { hideTapMenu(); return; }
+        const idx = units.indexOf(tapTarget);
+        if (idx >= 0) { units.splice(idx, 1); eud(); }
+        hideTapMenu();
+      };
+      tmbCancel.onclick = hideTapMenu;
+      document.addEventListener('touchstart', e => { if (!tapMenu.contains(e.target) && e.target !== cv) hideTapMenu(); }, { passive: true });
+
+      // ドラッグ検出（タップと区別するため移動距離を判定）
+      let pointerStart = null, dragStarted = false;
+      const DRAG_THRESHOLD = 8; // px
+
+      function findUnit(x, y) {
+        for (let i = units.length - 1; i >= 0; i--) {
+          const u = units[i];
+          if ((x - u.cx) ** 2 + (y - u.cy) ** 2 < (SW_ / 2 * 0.88) ** 2) return u;
+        }
+        return null;
+      }
+
+      function onPointerDown(e) {
+        if (gameOver || gameWon) return;
+        if (tapMenu.classList.contains('show')) { hideTapMenu(); return; }
+        e.preventDefault();
+        const { x, y } = gcp(e);
+        const u = findUnit(x, y);
+        if (!u) return;
+        pointerStart = { x, y, cx: e.touches ? e.touches[0].clientX : e.clientX, cy: e.touches ? e.touches[0].clientY : e.clientY, u };
+        dragStarted = false;
+        du = null;
+      }
+
+      function onPointerMove(e) {
+        if (!pointerStart) return;
+        e.preventDefault();
+        const { x, y } = gcp(e);
+        const dx = x - pointerStart.x, dy = y - pointerStart.y;
+        if (!dragStarted && Math.sqrt(dx*dx+dy*dy) > DRAG_THRESHOLD) {
+          // ドラッグ開始
+          dragStarted = true;
+          du = pointerStart.u;
+          dos = du.slotIdx;
+          ddx = x; ddy = y;
+        }
+        if (dragStarted) { ddx = x; ddy = y; }
+      }
+
+      function onPointerUp(e) {
+        if (!pointerStart) return;
+        e.preventDefault();
+        if (dragStarted && du) {
+          // ドラッグ終了: スロット移動
+          const { x, y } = gcp(e.changedTouches ? { clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY } : e);
+          const s = p2s(ddx, ddy);
+          if (s >= 0) {
+            const ex = units.find(u => u.slotIdx === s && u !== du);
+            if (ex) { ex.slotIdx = dos; const op = spos(dos); ex.cx = op.x; ex.cy = op.y; }
+            du.slotIdx = s; const np = spos(s); du.cx = np.x; du.cy = np.y;
+          } else { const op = spos(dos); du.cx = op.x; du.cy = op.y; }
+          du = null;
+        } else if (!dragStarted && pointerStart.u) {
+          // タップ: メニュー表示
+          const cx = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+          const cy = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+          showTapMenu(pointerStart.u, cx, cy);
+        }
+        pointerStart = null; dragStarted = false;
+      }
+
+      function onPointerCancel() {
+        if (du && dos >= 0) { const op = spos(dos); du.cx = op.x; du.cy = op.y; }
+        du = null; pointerStart = null; dragStarted = false;
+      }
+
+      // マウス
+      cv.addEventListener('mousedown',  onPointerDown);
+      cv.addEventListener('mousemove',  onPointerMove);
+      cv.addEventListener('mouseup',    onPointerUp);
+      cv.addEventListener('mouseleave', onPointerCancel);
+      // タッチ
+      cv.addEventListener('touchstart',  onPointerDown,  { passive: false });
+      cv.addEventListener('touchmove',   onPointerMove,  { passive: false });
+      cv.addEventListener('touchend',    onPointerUp,    { passive: false });
+      cv.addEventListener('touchcancel', onPointerCancel,{ passive: false });
+      // 右クリック（PC）→ メニュー
+      cv.addEventListener('contextmenu', e => {
+        e.preventDefault();
+        const { x, y } = gcp(e);
+        const u = findUnit(x, y);
+        if (u) showTapMenu(u, e.clientX, e.clientY);
+      });
+
+      // Wave management
+      function startWave() {
+        if (waveActive || gameOver || gameWon) return;
+        wave++; waveActive = true;
+        const hp = 60 + wave * 40, spd = 0.6 + wave * 0.06;
+        spawnQueue = Array.from({ length: 100 }, () => ({ hp, maxHp: hp, spd, dead: false, reward: 8 + wave * 2, slowed: 0 }));
+        spawnTick = 0; eud();
+      }
+
+      function spawnE(proto) {
+        enemies.push({ ...proto, pathIdx: 0, x: SPX, y: SPY });
+      }
+
+      function moveE(en) {
+        const ni = (en.pathIdx + 1) % PL;
+        const [tc, tr] = PATH[ni];
+        const tx = tc * CELL + CELL / 2, ty = tr * CELL + CELL / 2;
+        const dx = tx - en.x, dy = ty - en.y, dist = Math.sqrt(dx * dx + dy * dy);
+        const spd = en.slowed > 0 ? en.spd * 0.4 : en.spd;
+        if (dist < spd) { en.x = tx; en.y = ty; en.pathIdx = ni; }
+        else { en.x += dx / dist * spd; en.y += dy / dist * spd; }
+        if (en.slowed > 0) en.slowed--;
+      }
+
+      // Combat
+      function fireU(u) {
+        if (u === du) return;
+        if (u.cd > 0) { u.cd--; return; }
+        const al = enemies.filter(e => !e.dead);
+        let best = null, bd = Infinity;
+        al.forEach(e => { const d = (e.x - u.cx) ** 2 + (e.y - u.cy) ** 2; if (d <= u.radius * u.radius && d < bd) { best = e; bd = d; } });
+        if (!best) return;
+        u.cd = u.rate;
+        const dmg = Math.floor(u.baseDamage * emul(u.rarity));
+        if (u.special === 'chain') {
+          let hits = [best], cur = best;
+          for (let i = 0; i < 2; i++) {
+            let nx = null, nd = 9999;
+            al.forEach(e => { if (hits.includes(e)) return; const d = Math.hypot(e.x - cur.x, e.y - cur.y); if (d < 95 && d < nd) { nx = e; nd = d; } });
+            if (nx) { hits.push(nx); cur = nx; }
+          }
+          hits.forEach(e => { e.hp -= dmg; pp(e.x, e.y, u.color); });
+          bullets.push({ x: u.cx, y: u.cy, tx: best.x, ty: best.y, color: u.color, life: 7, chain: true });
+        } else {
+          bullets.push({ x: u.cx, y: u.cy, tx: best.x, ty: best.y, color: u.color, life: 7, dmg, target: best, special: u.special, sr2: u.radius * 0.4 });
+        }
+      }
+
+      function updB() {
+        bullets = bullets.filter(b => {
+          b.life--;
+          if (b.life <= 0) {
+            if (b.special === 'splash') {
+              enemies.filter(e => !e.dead).forEach(e => { if (Math.hypot(e.x - b.tx, e.y - b.ty) < b.sr2) { e.hp -= b.dmg; pp(e.x, e.y, b.color); } });
+              pe(b.tx, b.ty);
+            } else if (b.special === 'slow') {
+              if (b.target && !b.target.dead) { b.target.hp -= b.dmg; b.target.slowed = 150; pp(b.tx, b.ty, '#67e8f9'); }
+            } else if (!b.chain) {
+              if (b.target && !b.target.dead) { b.target.hp -= b.dmg; pp(b.tx, b.ty, b.color); }
+            }
+            return false;
+          }
+          return true;
+        });
+      }
+
+      function pp(x, y, c) { for (let i = 0; i < 4; i++) particles.push({ x, y, vx: (Math.random() - .5) * 3.5, vy: (Math.random() - .5) * 3.5, life: 18, color: c }); }
+      function pe(x, y) { for (let i = 0; i < 10; i++) particles.push({ x, y, vx: (Math.random() - .5) * 6, vy: (Math.random() - .5) * 6, life: 24, color: '#ef4444' }); }
+
+      function chkD() {
+        enemies.forEach(e => { if (e.hp <= 0 && !e.dead) { e.dead = true; coins += e.reward; score += e.reward * 2; } });
+        enemies = enemies.filter(e => !e.dead);
+      }
+
+      function endG(won) {
+        gameOver = !won; gameWon = won;
+        const mo = $('mo'); mo.style.display = 'block';
+        mo.innerHTML = won
+          ? '🏆 クリア！<br><span style="font-size:13px;font-weight:400;">スコア: ' + score + '</span>'
+          : '💀 ゲームオーバー<br><span style="font-size:12px;font-weight:400;">道に100体！ Wave' + wave + ' Score:' + score + '</span>';
+      }
+
+      // ===== Drawing =====
+      function drawUnit(cx, cy, u, ghost) {
+        const r = SW_ / 2 * 0.78;
+        ctx.globalAlpha = ghost ? 0.25 : 1;
+        const lv = EL[u.rarity];
+        // glow
+        if (lv > 0 && !ghost) {
+          ctx.save(); ctx.shadowColor = RRC[u.rarity]; ctx.shadowBlur = 8 + lv * 2;
+          ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0)'; ctx.fill();
+          ctx.restore();
+        }
+        // flash
+        const fl = u.ft > 0 && Math.floor(u.ft / 4) % 2 === 0;
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fillStyle = fl ? RRC[u.rarity] + '55' : '#1e293b';
+        ctx.fill();
+        ctx.strokeStyle = RRC[u.rarity];
+        ctx.lineWidth = u.rarity === 'sr' ? 3 : u.rarity === 'r' ? 2.2 : 1.8;
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+        // icon
+        ctx.font = `${Math.round(r * 1.15)}px sans-serif`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(u.icon, cx, cy + 1);
+        // rarity badge
+        ctx.font = 'bold 7px sans-serif'; ctx.fillStyle = RRC[u.rarity];
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(RRB[u.rarity], cx + r * 0.62, cy - r * 0.62);
+        // enhance badge
+        if (lv > 0) {
+          const bw = 15, bh = 9, bx = cx - bw / 2, by = cy + r - 4;
+          ctx.fillStyle = RRC[u.rarity]; ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 3); ctx.fill();
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 7px sans-serif'; ctx.fillText('+' + lv, cx, by + 5);
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function drawEnemy(e) {
+        ctx.beginPath(); ctx.arc(e.x, e.y, ER, 0, Math.PI * 2);
+        ctx.fillStyle = e.slowed > 0 ? '#065f46' : '#7f1d1d';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.font = `${ER * 1.6}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('👾', e.x, e.y + 1);
+        const bw = ER * 2.2, bh = 3;
+        ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(e.x - bw / 2, e.y - ER - 7, bw, bh);
+        ctx.fillStyle = '#22c55e'; ctx.fillRect(e.x - bw / 2, e.y - ER - 7, bw * Math.max(e.hp / e.maxHp, 0), bh);
+      }
+
+      function drawCountdown() {
+        if (waveActive || gameOver || gameWon) return;
+        const prog = 1 - (timerFrames / timerTotal);
+        const r = CELL * 1.4;
+        ctx.beginPath(); ctx.arc(SPX, SPY, r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,150,0,0.1)'; ctx.fill();
+        ctx.beginPath(); ctx.arc(SPX, SPY, r, -Math.PI / 2, -Math.PI / 2 + prog * Math.PI * 2);
+        ctx.strokeStyle = timerFrames <= 5 * FPS ? '#ef4444' : '#f59e0b';
+        ctx.lineWidth = 3; ctx.stroke();
+      }
+
+      function draw() {
+        // Road background
+        ctx.fillStyle = '#292524'; ctx.fillRect(0, 0, CW, CH);
+        // Green inner area
+        ctx.fillStyle = '#14532d'; ctx.fillRect(GX1, GY1, GW, GH);
+        // Subtle inner area tint
+        ctx.fillStyle = 'rgba(255,255,255,0.03)'; ctx.fillRect(GX1, GY1, GW, GH);
+
+        // Slot grid lines
+        ctx.strokeStyle = 'rgba(134,239,172,0.1)'; ctx.lineWidth = 0.8;
+        for (let c = 0; c <= SCOLS; c++) { const x = GX1 + c * SW_; ctx.beginPath(); ctx.moveTo(x, GY1); ctx.lineTo(x, GY2); ctx.stroke(); }
+        for (let r = 0; r <= SROWS; r++) { const y = GY1 + r * SH_; ctx.beginPath(); ctx.moveTo(GX1, y); ctx.lineTo(GX2, y); ctx.stroke(); }
+
+        // Empty slot numbers
+        const used = new Set(units.map(u => u.slotIdx));
+        ctx.font = '9px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        for (let i = 0; i < 24; i++) {
+          if (!used.has(i)) {
+            const p = spos(i);
+            ctx.fillStyle = 'rgba(134,239,172,0.06)';
+            ctx.fillRect(GX1 + (i % SCOLS) * SW_ + 1, GY1 + Math.floor(i / SCOLS) * SH_ + 1, SW_ - 2, SH_ - 2);
+            ctx.fillStyle = 'rgba(134,239,172,0.25)';
+            ctx.fillText(i + 1, p.x, p.y);
+          }
+        }
+
+        // Road center dashed
+        ctx.setLineDash([4, 6]); ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
+        const lc = CELL + CELL / 2; ctx.beginPath(); ctx.rect(lc, lc, CW - lc * 2, CH - lc * 2); ctx.stroke(); ctx.setLineDash([]);
+
+        // Spawn point marker
+        ctx.fillStyle = 'rgba(239,68,68,0.2)'; ctx.beginPath(); ctx.arc(SPX, SPY, CELL * 1.1, 0, Math.PI * 2); ctx.fill();
+        ctx.font = 'bold 9px sans-serif'; ctx.fillStyle = 'rgba(252,165,165,0.9)';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('出現', SPX, SPY);
+        drawCountdown();
+
+        // Unit ranges — ドラッグ中のユニットのみ表示
+        if (du) {
+          ctx.beginPath(); ctx.arc(du.cx, du.cy, du.radius, 0, Math.PI * 2);
+          ctx.fillStyle = RRC[du.rarity] + '25'; ctx.fill();
+          ctx.strokeStyle = RRC[du.rarity] + '70'; ctx.lineWidth = 1.5; ctx.stroke();
+        }
+
+        // Units
+        units.forEach(u => { if (u !== du) drawUnit(u.cx, u.cy, u, false); });
+
+        // Bullets
+        bullets.forEach(b => {
+          const p = 1 - b.life / 7;
+          const x = b.x + (b.tx - b.x) * p, y = b.y + (b.ty - b.y) * p;
+          ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI * 2); ctx.fillStyle = b.color; ctx.fill();
+        });
+
+        // Enemies
+        enemies.forEach(drawEnemy);
+
+        // Particles
+        particles.forEach(p => { ctx.globalAlpha = p.life / 18; ctx.beginPath(); ctx.arc(p.x, p.y, 2.2, 0, Math.PI * 2); ctx.fillStyle = p.color; ctx.fill(); });
+        ctx.globalAlpha = 1;
+
+        // Drag ghost + follow cursor
+        if (du) {
+          drawUnit(spos(dos).x, spos(dos).y, du, true);
+          drawUnit(ddx, ddy, du, false);
+          const s = p2s(ddx, ddy);
+          if (s >= 0) {
+            ctx.fillStyle = 'rgba(96,165,250,0.18)';
+            ctx.fillRect(GX1 + (s % SCOLS) * SW_, GY1 + Math.floor(s / SCOLS) * SH_, SW_, SH_);
+          }
+        }
+
+        ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+      }
+
+      // ===== Game Loop =====
+      let frame = 0;
+      function loop() {
+        if (gameOver || gameWon) { draw(); return; }
+        frame++;
+
+        // Wave countdown
+        if (!waveActive) {
+          timerFrames = Math.max(0, timerFrames - 1);
+          if (timerFrames === 0) startWave();
+        }
+
+        // Spawn one enemy every 0.1s (SPAWN_INTERVAL frames), overlapping OK
+        if (waveActive && spawnQueue.length > 0) {
+          spawnTick++;
+          if (spawnTick % SPAWN_INTERVAL === 0) spawnE(spawnQueue.shift());
+        }
+
+        enemies.forEach(moveE);
+        units.forEach(u => { if (u.ft > 0) u.ft--; });
+        units.forEach(fireU);
+        updB();
+        chkD();
+        particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vx *= 0.87; p.vy *= 0.87; p.life--; });
+        particles = particles.filter(p => p.life > 0);
+
+        if (enemies.length >= 100) { endG(false); return; }
+
+        if (waveActive && enemies.length === 0 && spawnQueue.length === 0) {
+          waveActive = false;
+          timerFrames = WAVE_INTERVAL * FPS;
+          timerTotal = WAVE_INTERVAL * FPS;
+          coins += 20 + wave * 8;
+          if (wave % 3 === 0) pray++;
+          if (wave >= 200) endG(true);
+        }
+
+        if (frame % 2 === 0) eud();
+        if (frame % 6 === 0) updateTimerUI();
+        draw();
+        requestAnimationFrame(loop);
+      }
+
+      eud(); updateTimerUI(); loop();
+    })();
+  </script>
+  <script>
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js");
+  </script>
+</body>
+
+</html>
